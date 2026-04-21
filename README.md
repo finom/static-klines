@@ -55,7 +55,69 @@ Call `GET /api/klines/start-dates/{interval}.json` (or `KLinesAPI.getStartDates(
 
 ## Clients
 
-Auto-generated from the same Zod schemas the server uses:
+Auto-generated from the same Zod schemas the server uses.
+
+### TypeScript
+
+```bash
+npm install static-klines
+```
+
+```ts
+import { KLinesAPI } from 'static-klines';
+
+// List supported trading pairs
+const symbols = await KLinesAPI.getSymbols();
+// → ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', ...]
+
+// List valid startDates for an interval
+const starts = await KLinesAPI.getStartDates({ params: { interval: '1d' } });
+// → ['2016-01-01', '2018-01-01', '2020-01-01', ...]
+
+// Fetch a window of candles (Binance's native 12-tuple shape)
+const candles = await KLinesAPI.getKlines1d({
+  params: { symbol: 'BTCUSDT', startDate: '2018-01-01' },
+});
+// → [[1514764800000, "13715.65000000", "13818.55000000", ...], ...]
+```
+
+Override the `apiRoot` to point at a fork or preview deploy:
+
+```ts
+await KLinesAPI.getKlines15m({
+  params: { symbol: 'SOLUSDT', startDate: '2025-01-06' },
+  apiRoot: 'https://my-fork.github.io/static-klines/api',
+});
+```
+
+### Python
+
+```bash
+pip install static-klines
+```
+
+```python
+from static_klines import KLinesAPI
+
+symbols = KLinesAPI.get_symbols()
+# ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', ...]
+
+starts = KLinesAPI.get_start_dates(params={"interval": "1d"})
+# ['2016-01-01', '2018-01-01', '2020-01-01', ...]
+
+candles = KLinesAPI.get_klines_1d(
+    params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
+)
+# [[1514764800000, '13715.65000000', '13818.55000000', ...], ...]
+
+# Override origin:
+candles = KLinesAPI.get_klines_15m(
+    params={"symbol": "SOLUSDT", "startDate": "2025-01-06"},
+    api_root="https://my-fork.github.io/static-klines/api",
+)
+```
+
+### Building + publishing the clients (maintainers)
 
 - **TypeScript** — `npx vovk bundle` → `./dist` → `npm publish ./dist`
 - **Python** — `npx vovk generate --from py --out ./dist_python` → `python -m build && twine upload`
