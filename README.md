@@ -14,9 +14,16 @@ Every `(interval, symbol, window)` tuple is pre-rendered at build time into a pl
 
 ## Live site
 
-- Interactive docs (Scalar): https://finom.github.io/static-klines/
-- OpenAPI spec: https://finom.github.io/static-klines/api/openapi.json
-- Example: https://finom.github.io/static-klines/api/klines/1d/BTCUSDT/2018-01-01.json
+- **Interactive docs (Scalar):** https://finom.github.io/static-klines/
+- **OpenAPI spec:** https://finom.github.io/static-klines/api/openapi.json
+
+### Try it — open any of these
+
+- https://finom.github.io/static-klines/api/klines/symbols.json — list of supported trading pairs
+- https://finom.github.io/static-klines/api/klines/start-dates/1d.json — every valid `startDate` for the 1d interval
+- https://finom.github.io/static-klines/api/klines/1d/BTCUSDT/2018-01-01.json — 2 years of BTCUSDT daily candles starting Jan 1, 2018
+- https://finom.github.io/static-klines/api/klines/1h/ETHUSDT/2024-01-01.json — January 2024 hourly candles for ETHUSDT
+- https://finom.github.io/static-klines/api/klines/15m/SOLUSDT/2024-01-01.json — first week of 2024, 15-minute SOLUSDT candles
 
 ## Symbols
 

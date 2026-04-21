@@ -40,9 +40,16 @@ const banner = `
 
 No rate limits, infinite cache lifetime, globally CDN'd. Every URL is a committed JSON file — the repo itself *is* the dataset.
 
-**Live API:** ${apiRoot}
-**OpenAPI spec:** ${apiRoot}/openapi.json
 **Interactive docs:** ${origin}${basePath}/
+**OpenAPI spec:** ${apiRoot}/openapi.json
+
+### Try it — open any of these in a browser
+
+- [${apiRoot}/klines/symbols.json](${apiRoot}/klines/symbols.json) — list of supported trading pairs
+- [${apiRoot}/klines/start-dates/1d.json](${apiRoot}/klines/start-dates/1d.json) — every valid \`startDate\` for the 1d interval
+- [${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json](${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json) — 2 years of BTCUSDT daily candles starting Jan 1, 2018
+- [${apiRoot}/klines/1h/ETHUSDT/2024-01-01.json](${apiRoot}/klines/1h/ETHUSDT/2024-01-01.json) — January 2024 hourly candles for ETHUSDT
+- [${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json](${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json) — first week of 2024, 15-minute SOLUSDT candles
 
 ### Supported symbols
 
