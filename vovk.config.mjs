@@ -36,7 +36,9 @@ const symbolsList = PAIRS.map((p) => `\`${p}\``).join(', ');
 const description = `Type-safe, auto-generated client for the **static-klines** API — historical Binance spot klines served as pre-rendered static JSON. No rate limits, infinite cache lifetime, globally CDN'd.`;
 
 const banner = `
-> **⚠️ Experimental** — this is a community cache of the Binance public REST API, not audit-grade market data. Binance occasionally restates historical candles; this snapshot is refreshed once a day. Use the official Binance API if you need guaranteed freshness or correctness.
+**static-klines** — pre-rendered historical Binance spot klines for the top 10 USDT pairs, served as plain static JSON files on GitHub Pages. Built as a zero-setup dataset for AI model training, backtesting, and other crypto data experiments where you just want candles in a fetch call without signing up, paying, or managing rate limits.
+
+No rate limits, infinite cache lifetime, globally CDN'd. Every URL is a committed JSON file — the repo itself *is* the dataset.
 
 **Live API:** ${apiRoot}
 **OpenAPI spec:** ${apiRoot}/openapi.json
@@ -44,7 +46,7 @@ const banner = `
 
 ### Supported symbols
 
-${symbolsList}
+${symbolsList} — the 10 largest USDT pairs on Binance spot.
 
 ### Supported intervals
 
@@ -55,6 +57,8 @@ Every \`startDate\` is a real calendar boundary — you can guess the next URL i
 ${intervalsTable}
 
 Each file contains the fully-closed Binance spot candles that fall inside that calendar window (always ≤1000). Pre-listing windows return \`[]\`; future windows are scaffolded as \`[]\` and populated daily by GitHub Actions.
+
+> **⚠️ Experimental / not audit-grade.** This is a community cache of Binance's public REST API, refreshed once a day. Binance occasionally restates historical candles and a daily cache can't reflect that. Don't use it for trading or compliance — fine for ML datasets, charts, backtests, and exploratory analysis.
 `.trim();
 
 const sharedPackage = {
@@ -83,9 +87,14 @@ const sharedReadme = {
 /** @type {import('vovk').VovkConfig} */
 const config = {
   outputConfig: {
-    // Intentionally no top-level `origin` — it breaks `vovk dev` (the watcher
-    // concatenates it onto localhost). The published clients set origin via
-    // bundle.outputConfig.origin + the `--origin` flag on `vovk generate`.
+    // Mirror Next.js's basePath here so `vovk dev --exit` queries the correct
+    // schema URL during prebuild. Without this, with BASE_PATH=/static-klines
+    // set, Next serves /static-klines/api/_schema_ while vovk (default origin
+    // '') probes /api/_schema_ and hits 404 — result: openapi.json deploys
+    // with empty `paths`. Published clients get their real origin from
+    // bundle.outputConfig.origin (TS) and the --origin flag on `vovk generate`
+    // (Python), so this path-only value doesn't leak into the libraries.
+    origin: process.env.BASE_PATH || '',
     imports: {
       validateOnClient: 'vovk-ajv',
     },

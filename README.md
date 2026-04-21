@@ -1,10 +1,16 @@
 # static-klines
 
-**Goal:** offer a static, easily accessible, fast API and matching client libraries (TypeScript, Python) for historical Binance Spot klines.
+[![CI](https://github.com/finom/static-klines/actions/workflows/nextjs.yml/badge.svg)](https://github.com/finom/static-klines/actions/workflows/nextjs.yml)
+[![npm version](https://img.shields.io/npm/v/static-klines.svg?label=npm%20%7C%20static-klines)](https://www.npmjs.com/package/static-klines)
+[![PyPI version](https://img.shields.io/pypi/v/static-klines.svg?label=PyPI%20%7C%20static-klines)](https://pypi.org/project/static-klines/)
 
-Every `(interval, symbol, window)` tuple is pre-rendered at build time into a plain JSON file on GitHub Pages. No rate limits, no server-side compute, infinitely cacheable, globally CDN'd.
+Pre-rendered historical Binance Spot klines for the **top 10 USDT pairs**, served as plain static JSON on GitHub Pages.
 
-> ⚠️ **Experimental — data may be incomplete or imprecise.** This is a community cache of Binance's public REST API, not audit-grade market data. Binance occasionally restates historical candles; this snapshot is refreshed once a day. Use the official Binance API if you need guaranteed freshness or correctness.
+**Goal:** offer a static, easily accessible, fast API and matching client libraries (TypeScript, Python) for historical Binance Spot klines. Built as a zero-setup dataset for **AI model training, backtesting, and other crypto data experiments** where you just want candles in a fetch call without signing up, paying, or managing rate limits.
+
+Every `(interval, symbol, window)` tuple is pre-rendered at build time into a plain JSON file on GitHub Pages. No rate limits, no server-side compute, infinitely cacheable, globally CDN'd. The repo *is* the dataset.
+
+> ⚠️ **Experimental — not audit-grade data.** This is a community cache of Binance's public REST API, refreshed once a day. Binance occasionally restates historical candles; a daily cache can't reflect that. Don't use it for trading or compliance — fine for ML datasets, charts, backtests, and exploratory analysis.
 
 ## Live site
 

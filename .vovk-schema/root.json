@@ -88,9 +88,17 @@
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Calendar-aligned window-start date (UTC, YYYY-MM-DD).",
+                "example": "2024-01-01"
               },
-              "description": "Ordered list of window-start dates (UTC, YYYY-MM-DD) for the given interval."
+              "description": "Ordered list of window-start dates (UTC, YYYY-MM-DD) for the given interval. Every value is a real calendar boundary (Monday, 1st of month, 1st of quarter, etc.) — pass any one of these back as `startDate` on the candle endpoints.",
+              "example": [
+                "2024-01-01",
+                "2024-02-01",
+                "2024-03-01",
+                "2024-04-01"
+              ]
             }
           },
           "operationObject": {
