@@ -57,6 +57,8 @@ Pairs that listed later than the interval's anchor return empty `[]` for leading
 
 Call `GET /api/klines/start-dates/{interval}.json` (or `KLinesAPI.getStartDates({ interval })` in any client) for the full ordered enum of valid startDates.
 
+**Or:** see [`ENDPOINTS.md`](ENDPOINTS.md) for a flat, human-browsable list of **every** static URL served by this site (17,784 of them, through 2040-01-01).
+
 ## Clients
 
 Auto-generated from the same Zod schemas the server uses.
