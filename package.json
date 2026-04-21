@@ -17,7 +17,7 @@
     "fetch:klines:dry": "DRY_RUN=1 node scripts/fetch-klines.ts",
     "scaffold:cache": "SKIP_FETCH=1 node scripts/fetch-klines.ts",
     "bundle": "vovk bundle",
-    "bundle:py": "vovk generate --from py --out ./dist_python --origin https://finom.github.io/static-klines/api",
+    "bundle:py": "vovk generate --from py --out ./dist_python --origin https://finom.github.io/static-klines",
     "publish:node": "npm publish ./dist",
     "publish:python": "python3 -m build ./dist_python --wheel --sdist && python3 -m twine upload ./dist_python/dist/*",
     "git-tag": "git add . && git commit -m \"chore: release v$(node -p \\\"require('./package.json').version\\\")\" && git tag v$(node -p \\\"require('./package.json').version\\\")",
@@ -28,7 +28,8 @@
     "lint": "biome lint .",
     "check": "biome check --write .",
     "pretest": "npm run bundle",
-    "test": "node --test tests/*.mts"
+    "test": "node --test tests/*.mts",
+    "test:py": "npm run bundle:py && python3 -m pip install --quiet --force-reinstall ./dist_python && python3 -m unittest discover -s tests/python -p 'test_*.py' -v"
   },
   "dependencies": {
     "@scalar/api-reference-react": "^0.9.24",

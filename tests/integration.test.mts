@@ -1,112 +1,41 @@
 import { strict as assert } from 'node:assert';
-import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { createServer, type Server } from 'node:http';
-import { after, before, describe, test } from 'node:test';
+import { describe, test } from 'node:test';
 
 import { KLinesAPI, OpenAPI } from '../dist/index.mjs';
 import { PAIRS } from '../src/config/pairs.ts';
 import { START_DATES_1d } from '../src/config/start-dates.generated.ts';
 
-// Start a tiny static server that maps /api/* URLs onto .klines-cache + the
-// generated openapi document. It mimics what Next.js static export publishes.
-let server: Server;
-let apiRoot: string;
+// Tests run against the DEPLOYED site. Set TEST_API_ROOT to override (e.g. to
+// point at a preview deploy). Default is the production GitHub Pages URL.
+const apiRoot = process.env.TEST_API_ROOT ?? 'https://finom.github.io/static-klines/api';
 
-before(async () => {
-  const openapi = JSON.parse(
-    await readFile('node_modules/.vovk-client/openapi.json', 'utf8'),
-  );
-
-  server = createServer(async (req, res) => {
-    try {
-      const url = new URL(req.url ?? '/', 'http://localhost');
-      const candleMatch = /^\/api\/klines\/(\w+)\/(\w+)\/(.+)\.json$/.exec(url.pathname);
-      const startDatesMatch = /^\/api\/klines\/start-dates\/(\w+)\.json$/.exec(url.pathname);
-
-      if (url.pathname === '/api/klines/symbols.json') {
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(JSON.stringify([...PAIRS]));
-        return;
-      }
-
-      if (startDatesMatch) {
-        const [, interval] = startDatesMatch;
-        const mod = await import(`../src/config/start-dates.generated.ts`);
-        const dates = (mod.START_DATES as Record<string, readonly string[]>)[interval];
-        if (!dates) {
-          res.writeHead(404).end('unknown interval');
-          return;
-        }
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(JSON.stringify([...dates]));
-        return;
-      }
-
-      if (candleMatch) {
-        const [, interval, symbol, date] = candleMatch;
-        const filePath = `.klines-cache/${symbol}/${interval}/${date}.json`;
-        if (!existsSync(filePath)) {
-          res.writeHead(404).end('no such window');
-          return;
-        }
-        const body = await readFile(filePath, 'utf8');
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(body);
-        return;
-      }
-
-      if (url.pathname === '/api/openapi.json') {
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(JSON.stringify(openapi));
-        return;
-      }
-
-      res.writeHead(404).end('not found');
-    } catch (err) {
-      res.writeHead(500).end(String(err));
-    }
-  });
-
-  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
-  const addr = server.address();
-  if (typeof addr !== 'object' || addr === null) throw new Error('no address');
-  apiRoot = `http://127.0.0.1:${addr.port}/api`;
-});
-
-after(async () => {
-  await new Promise<void>((resolve, reject) => {
-    server.close((err) => (err ? reject(err) : resolve()));
-  });
-});
-
-describe('raw REST endpoints', () => {
+describe('raw REST endpoints (live)', () => {
   test('openapi.json exposes every klines endpoint', async () => {
     const res = await fetch(`${apiRoot}/openapi.json`);
     assert.equal(res.status, 200);
     const spec = (await res.json()) as { paths: Record<string, unknown> };
     const paths = Object.keys(spec.paths);
-    assert.ok(paths.includes('/api/klines/symbols.json'));
-    assert.ok(paths.includes('/api/klines/start-dates/{interval}.json'));
-    assert.ok(paths.includes('/api/klines/1d/{symbol}/{startDate}.json'));
-    assert.ok(paths.includes('/api/klines/15m/{symbol}/{startDate}.json'));
+    assert.ok(paths.includes('/api/klines/symbols.json'), 'has symbols');
+    assert.ok(paths.includes('/api/klines/start-dates/{interval}.json'), 'has start-dates');
+    assert.ok(paths.includes('/api/klines/1d/{symbol}/{startDate}.json'), 'has 1d');
+    assert.ok(paths.includes('/api/klines/15m/{symbol}/{startDate}.json'), 'has 15m');
   });
 
-  test('symbols.json returns the full supported-pairs list', async () => {
+  test('symbols.json returns the expected 10 pairs', async () => {
     const res = await fetch(`${apiRoot}/klines/symbols.json`);
     assert.equal(res.status, 200);
     const symbols = (await res.json()) as string[];
     assert.deepEqual(symbols, [...PAIRS]);
   });
 
-  test('start-dates/1d.json returns the committed enum', async () => {
+  test('start-dates/1d.json matches committed enum', async () => {
     const res = await fetch(`${apiRoot}/klines/start-dates/1d.json`);
     assert.equal(res.status, 200);
     const dates = (await res.json()) as string[];
     assert.deepEqual(dates, [...START_DATES_1d]);
   });
 
-  test('1d BTCUSDT 2018-01-01 returns 12-tuple candles', async () => {
+  test('1d/BTCUSDT/2018-01-01.json returns 12-tuple candles starting on Jan 1', async () => {
     const res = await fetch(`${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json`);
     assert.equal(res.status, 200);
     const candles = (await res.json()) as unknown[][];
@@ -114,27 +43,34 @@ describe('raw REST endpoints', () => {
     const [first] = candles;
     assert.equal(first.length, 12, 'Binance kline tuple is 12 elements');
     assert.equal(first[0], Date.UTC(2018, 0, 1), 'first openTime is 2018-01-01 00:00 UTC');
-    assert.equal(typeof first[1], 'string', 'open price is stringified decimal');
+    assert.equal(typeof first[1], 'string', 'open is a stringified decimal');
   });
 
-  test('unknown symbol/interval returns 404', async () => {
+  test('15m/SOLUSDT/2024-01-01.json returns a full 672-candle week', async () => {
+    const res = await fetch(`${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json`);
+    assert.equal(res.status, 200);
+    const candles = (await res.json()) as unknown[][];
+    assert.equal(candles.length, 672, '7 days × 96 candles/day');
+    assert.equal(candles[0][0], Date.UTC(2024, 0, 1));
+  });
+
+  test('unknown window returns 404', async () => {
     const res = await fetch(`${apiRoot}/klines/1d/DOESNOTEXIST/2018-01-01.json`);
     assert.equal(res.status, 404);
   });
 });
 
-describe('TypeScript RPC client (./dist)', () => {
-  test('getSymbols returns the supported-pairs list', async () => {
+describe('TypeScript RPC client (./dist, live API)', () => {
+  test('getSymbols returns the expected 10 pairs', async () => {
     const symbols = await KLinesAPI.getSymbols({ apiRoot });
     assert.deepEqual(symbols, [...PAIRS]);
   });
 
-  test('getStartDates is type-narrowed per interval', async () => {
+  test('getStartDates narrows per interval', async () => {
     const dates = await KLinesAPI.getStartDates({
       params: { interval: '1d' },
       apiRoot,
     });
-    assert.ok(Array.isArray(dates));
     assert.deepEqual(dates, [...START_DATES_1d]);
   });
 
@@ -150,11 +86,21 @@ describe('TypeScript RPC client (./dist)', () => {
     assert.equal(first[0], Date.UTC(2018, 0, 1));
   });
 
+  test('getKlines1h for ETHUSDT Jan 2024 has up to 744 candles (31 days × 24)', async () => {
+    const candles = await KLinesAPI.getKlines1h({
+      params: { symbol: 'ETHUSDT', startDate: '2024-01-01' },
+      apiRoot,
+    });
+    assert.ok(candles.length > 700);
+    assert.ok(candles.length <= 744);
+  });
+
   test('getSpec returns the OpenAPI document', async () => {
     const spec = await OpenAPI.getSpec({ apiRoot });
     assert.ok(typeof spec === 'object' && spec !== null);
     const { paths } = spec as { paths: Record<string, unknown> };
     assert.ok('/api/klines/start-dates/{interval}.json' in paths);
+    assert.ok('/api/klines/symbols.json' in paths);
   });
 
   test('getURL helper composes the correct path', () => {

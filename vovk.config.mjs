@@ -137,7 +137,11 @@ const config = {
       });
     },
     outputConfig: {
-      origin: apiRoot,
+      // NB: origin here must NOT include `/api` — vovk-cli appends rootEntry
+      // ("api" by default) on top to produce the final apiRoot. If you pass
+      // the full apiRoot here you get `.../api/api` as the client's default
+      // URL.
+      origin: `${origin}${basePath}`,
       package: {
         ...sharedPackage,
         type: 'module',
