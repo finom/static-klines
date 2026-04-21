@@ -24,26 +24,72 @@ import {
 
 const Candle = z
   .tuple([
-    z.number().int().meta({ description: 'Open time (ms since epoch, UTC)' }),
-    z.string().meta({ description: 'Open price (stringified decimal)' }),
-    z.string().meta({ description: 'High price (stringified decimal)' }),
-    z.string().meta({ description: 'Low price (stringified decimal)' }),
-    z.string().meta({ description: 'Close price (stringified decimal)' }),
-    z.string().meta({ description: 'Base asset volume (stringified decimal)' }),
-    z.number().int().meta({ description: 'Close time (ms since epoch, UTC)' }),
-    z.string().meta({ description: 'Quote asset volume (stringified decimal)' }),
-    z.number().int().meta({ description: 'Number of trades in the candle' }),
-    z.string().meta({ description: 'Taker buy base asset volume (stringified decimal)' }),
-    z.string().meta({ description: 'Taker buy quote asset volume (stringified decimal)' }),
-    z.string().meta({ description: 'Unused field (Binance legacy, historically "ignore")' }),
+    z.number().int().meta({ description: 'Open time (ms since epoch, UTC)', example: 1514764800000 }),
+    z.string().meta({ description: 'Open price (stringified decimal)', example: '13715.65000000' }),
+    z.string().meta({ description: 'High price (stringified decimal)', example: '13818.55000000' }),
+    z.string().meta({ description: 'Low price (stringified decimal)', example: '12750.00000000' }),
+    z.string().meta({ description: 'Close price (stringified decimal)', example: '13380.00000000' }),
+    z.string().meta({ description: 'Base asset volume (stringified decimal)', example: '8609.91584400' }),
+    z.number().int().meta({ description: 'Close time (ms since epoch, UTC)', example: 1514851199999 }),
+    z.string().meta({ description: 'Quote asset volume (stringified decimal)', example: '114799747.44197057' }),
+    z.number().int().meta({ description: 'Number of trades in the candle', example: 105595 }),
+    z.string().meta({ description: 'Taker buy base asset volume (stringified decimal)', example: '3961.93894600' }),
+    z.string().meta({ description: 'Taker buy quote asset volume (stringified decimal)', example: '52809747.44038045' }),
+    z.string().meta({ description: 'Unused field (Binance legacy, historically "ignore")', example: '0' }),
   ])
-  .meta({ description: 'Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.' });
+  .meta({
+    description: 'Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.',
+    example: [
+      1514764800000,
+      '13715.65000000',
+      '13818.55000000',
+      '12750.00000000',
+      '13380.00000000',
+      '8609.91584400',
+      1514851199999,
+      '114799747.44197057',
+      105595,
+      '3961.93894600',
+      '52809747.44038045',
+      '0',
+    ],
+  });
 
 const Candles = z
   .array(Candle)
   .meta({
     description:
       'Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.',
+    example: [
+      [
+        1514764800000,
+        '13715.65000000',
+        '13818.55000000',
+        '12750.00000000',
+        '13380.00000000',
+        '8609.91584400',
+        1514851199999,
+        '114799747.44197057',
+        105595,
+        '3961.93894600',
+        '52809747.44038045',
+        '0',
+      ],
+      [
+        1514851200000,
+        '13382.16000000',
+        '15473.49000000',
+        '12890.02000000',
+        '14675.11000000',
+        '20078.09211100',
+        1514937599999,
+        '275545340.79810440',
+        197229,
+        '9915.30471600',
+        '136355703.49029400',
+        '0',
+      ],
+    ],
   });
 
 export type RawCandle = z.infer<typeof Candle>;
@@ -74,6 +120,20 @@ function klinesDescription(interval: Interval): string {
 
 @prefix('klines')
 export default class KLinesController {
+  @operation({
+    summary: 'List supported symbols',
+    description:
+      'Returns the hardcoded list of Binance spot trading pairs covered by this cache. Same enum used by every `symbol` path parameter.',
+    tags: ['meta'],
+  })
+  @get('symbols.json', { staticParams: [{}] })
+  static getSymbols = procedure({
+    output: z.array(Symbol).meta({
+      description: 'Ordered list of supported Binance spot trading pair symbols.',
+      example: [...PAIRS],
+    }),
+  }).handle(() => [...PAIRS]);
+
   @operation({
     summary: 'List valid startDates for an interval',
     description:

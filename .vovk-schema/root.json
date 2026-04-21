@@ -9,6 +9,52 @@
       "originalControllerName": "KLinesController",
       "prefix": "klines",
       "handlers": {
+        "getSymbols": {
+          "validation": {
+            "output": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BTCUSDT",
+                  "ETHUSDT",
+                  "BNBUSDT",
+                  "SOLUSDT",
+                  "XRPUSDT",
+                  "ADAUSDT",
+                  "DOGEUSDT",
+                  "AVAXUSDT",
+                  "LINKUSDT",
+                  "DOTUSDT"
+                ],
+                "description": "Trading pair (Binance spot symbol, hardcoded list of 10)"
+              },
+              "description": "Ordered list of supported Binance spot trading pair symbols.",
+              "example": [
+                "BTCUSDT",
+                "ETHUSDT",
+                "BNBUSDT",
+                "SOLUSDT",
+                "XRPUSDT",
+                "ADAUSDT",
+                "DOGEUSDT",
+                "AVAXUSDT",
+                "LINKUSDT",
+                "DOTUSDT"
+              ]
+            }
+          },
+          "operationObject": {
+            "summary": "List supported symbols",
+            "description": "Returns the hardcoded list of Binance spot trading pairs covered by this cache. Same enum used by every `symbol` path parameter.",
+            "tags": [
+              "meta"
+            ]
+          },
+          "path": "symbols.json",
+          "httpMethod": "GET"
+        },
         "getStartDates": {
           "validation": {
             "params": {
@@ -988,60 +1034,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -1568,60 +1670,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -1942,60 +2100,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2187,60 +2401,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2387,60 +2657,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2542,60 +2868,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2697,60 +3079,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2830,60 +3268,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -2952,60 +3446,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -3067,60 +3617,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -3180,60 +3786,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {
@@ -3293,60 +3955,116 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Open time (ms since epoch, UTC)"
+                    "description": "Open time (ms since epoch, UTC)",
+                    "example": 1514764800000
                   },
                   {
                     "type": "string",
-                    "description": "Open price (stringified decimal)"
+                    "description": "Open price (stringified decimal)",
+                    "example": "13715.65000000"
                   },
                   {
                     "type": "string",
-                    "description": "High price (stringified decimal)"
+                    "description": "High price (stringified decimal)",
+                    "example": "13818.55000000"
                   },
                   {
                     "type": "string",
-                    "description": "Low price (stringified decimal)"
+                    "description": "Low price (stringified decimal)",
+                    "example": "12750.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Close price (stringified decimal)"
+                    "description": "Close price (stringified decimal)",
+                    "example": "13380.00000000"
                   },
                   {
                     "type": "string",
-                    "description": "Base asset volume (stringified decimal)"
+                    "description": "Base asset volume (stringified decimal)",
+                    "example": "8609.91584400"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Close time (ms since epoch, UTC)"
+                    "description": "Close time (ms since epoch, UTC)",
+                    "example": 1514851199999
                   },
                   {
                     "type": "string",
-                    "description": "Quote asset volume (stringified decimal)"
+                    "description": "Quote asset volume (stringified decimal)",
+                    "example": "114799747.44197057"
                   },
                   {
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991,
-                    "description": "Number of trades in the candle"
+                    "description": "Number of trades in the candle",
+                    "example": 105595
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy base asset volume (stringified decimal)"
+                    "description": "Taker buy base asset volume (stringified decimal)",
+                    "example": "3961.93894600"
                   },
                   {
                     "type": "string",
-                    "description": "Taker buy quote asset volume (stringified decimal)"
+                    "description": "Taker buy quote asset volume (stringified decimal)",
+                    "example": "52809747.44038045"
                   },
                   {
                     "type": "string",
-                    "description": "Unused field (Binance legacy, historically \"ignore\")"
+                    "description": "Unused field (Binance legacy, historically \"ignore\")",
+                    "example": "0"
                   }
                 ],
-                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it."
+                "description": "Single Binance spot kline row — 12-tuple, exactly as the Binance REST API returns it.",
+                "example": [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ]
               },
-              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated."
+              "description": "Fully-closed candles for one (symbol, interval) window, ordered by openTime ascending. Each file covers one calendar-aligned stride (e.g. 1 ISO week for 15m, 1 month for 1h, 2 years for 1d). Returns an empty array for windows before the symbol was listed on Binance, or for future windows that have not yet been populated.",
+              "example": [
+                [
+                  1514764800000,
+                  "13715.65000000",
+                  "13818.55000000",
+                  "12750.00000000",
+                  "13380.00000000",
+                  "8609.91584400",
+                  1514851199999,
+                  "114799747.44197057",
+                  105595,
+                  "3961.93894600",
+                  "52809747.44038045",
+                  "0"
+                ],
+                [
+                  1514851200000,
+                  "13382.16000000",
+                  "15473.49000000",
+                  "12890.02000000",
+                  "14675.11000000",
+                  "20078.09211100",
+                  1514937599999,
+                  "275545340.79810440",
+                  197229,
+                  "9915.30471600",
+                  "136355703.49029400",
+                  "0"
+                ]
+              ]
             }
           },
           "operationObject": {

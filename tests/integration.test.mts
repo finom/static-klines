@@ -5,6 +5,7 @@ import { createServer, type Server } from 'node:http';
 import { after, before, describe, test } from 'node:test';
 
 import { KLinesAPI, OpenAPI } from '../dist/index.mjs';
+import { PAIRS } from '../src/config/pairs.ts';
 import { START_DATES_1d } from '../src/config/start-dates.generated.ts';
 
 // Start a tiny static server that maps /api/* URLs onto .klines-cache + the
@@ -22,6 +23,12 @@ before(async () => {
       const url = new URL(req.url ?? '/', 'http://localhost');
       const candleMatch = /^\/api\/klines\/(\w+)\/(\w+)\/(.+)\.json$/.exec(url.pathname);
       const startDatesMatch = /^\/api\/klines\/start-dates\/(\w+)\.json$/.exec(url.pathname);
+
+      if (url.pathname === '/api/klines/symbols.json') {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify([...PAIRS]));
+        return;
+      }
 
       if (startDatesMatch) {
         const [, interval] = startDatesMatch;
@@ -79,9 +86,17 @@ describe('raw REST endpoints', () => {
     assert.equal(res.status, 200);
     const spec = (await res.json()) as { paths: Record<string, unknown> };
     const paths = Object.keys(spec.paths);
+    assert.ok(paths.includes('/api/klines/symbols.json'));
     assert.ok(paths.includes('/api/klines/start-dates/{interval}.json'));
     assert.ok(paths.includes('/api/klines/1d/{symbol}/{startDate}.json'));
     assert.ok(paths.includes('/api/klines/15m/{symbol}/{startDate}.json'));
+  });
+
+  test('symbols.json returns the full supported-pairs list', async () => {
+    const res = await fetch(`${apiRoot}/klines/symbols.json`);
+    assert.equal(res.status, 200);
+    const symbols = (await res.json()) as string[];
+    assert.deepEqual(symbols, [...PAIRS]);
   });
 
   test('start-dates/1d.json returns the committed enum', async () => {
@@ -109,6 +124,11 @@ describe('raw REST endpoints', () => {
 });
 
 describe('TypeScript RPC client (./dist)', () => {
+  test('getSymbols returns the supported-pairs list', async () => {
+    const symbols = await KLinesAPI.getSymbols({ apiRoot });
+    assert.deepEqual(symbols, [...PAIRS]);
+  });
+
   test('getStartDates is type-narrowed per interval', async () => {
     const dates = await KLinesAPI.getStartDates({
       params: { interval: '1d' },
