@@ -1,6 +1,6 @@
 ---
 name: static-klines-usage
-description: How to consume the static-klines API from TypeScript, Python, or Rust, how to call the raw REST endpoints, and how to extract the OpenAPI spec. Use when the user asks about fetching Binance klines data served by this repo.
+description: How to consume the static-klines API from TypeScript or Python, how to call the raw REST endpoints, and how to extract the OpenAPI spec. Use when the user asks about fetching Binance klines data served by this repo.
 ---
 
 # static-klines — consumer guide
@@ -93,7 +93,7 @@ All parameter enums, output shapes, and per-field descriptions come directly fro
 
 ## 3. Python client (vovk-python)
 
-The Python generator is installed and run from this repo; it emits a real Python package to `./dist_python`. Note: `vovk bundle` is TypeScript-only — Python and Rust use `vovk generate` instead.
+The Python generator is installed and run from this repo; it emits a real Python package to `./dist_python`. Note: `vovk bundle` is TypeScript-only — Python uses `vovk generate` instead.
 
 ```bash
 # from the static-klines repo
@@ -113,24 +113,7 @@ candles = KLinesAPI.get_klines_1d(
 )
 ```
 
-## 4. Rust client (vovk-rust)
-
-```bash
-npm i -D vovk-rust
-npx vovk generate --from rs --out ./dist_rust --origin https://<owner>.github.io/static-klines/api
-cargo publish --manifest-path dist_rust/Cargo.toml
-```
-
-Consumer usage:
-
-```rust
-use static_klines_rs::k_lines_api::KLinesAPI;
-
-let client = KLinesAPI::new("https://<owner>.github.io/static-klines/api");
-let candles = client.get_klines_1d("BTCUSDT", "2017-08-17").await?;
-```
-
-## 5. Extracting OpenAPI for code generation
+## 4. Extracting OpenAPI for code generation
 
 If you don't want to use the Vovk generators, point any OpenAPI-based tool at `/api/openapi.json`:
 
@@ -145,7 +128,7 @@ openapi-generator-cli generate \
   -g python -o ./my-python-client
 ```
 
-## 6. Gotchas
+## 5. Gotchas
 
 - **Start-date alignment**: every `startDate` is a real calendar boundary (Monday for 15m/30m, 1st of month for 1h/2h, 1st of quarter for 4h, etc. — see the table above). Pick from the runtime enum (`/api/klines/start-dates/{interval}.json`); any other value returns 404.
 - **Decimal precision**: all OHLCV values are returned as strings. Convert to `Decimal` / `BigDecimal`, not float, if you care about precision.

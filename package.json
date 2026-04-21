@@ -1,7 +1,7 @@
 {
   "name": "static-klines",
-  "version": "0.1.1",
-  "description": "Historical Binance spot klines, committed as static JSON and served via Next.js static export. This repo's package is intentionally private — published client libraries live under /dist, /dist_python, /dist_rust.",
+  "version": "0.1.4",
+  "description": "Historical Binance spot klines, committed as static JSON and served via Next.js static export. This repo's package is intentionally private — published client libraries live under /dist and /dist_python.",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,13 +18,11 @@
     "scaffold:cache": "SKIP_FETCH=1 node scripts/fetch-klines.ts",
     "bundle": "vovk bundle",
     "bundle:py": "vovk generate --from py --out ./dist_python --origin https://finom.github.io/static-klines/api",
-    "bundle:rs": "vovk generate --from rs --out ./dist_rust --origin https://finom.github.io/static-klines/api",
     "publish:node": "npm publish ./dist",
-    "publish:rust": "cargo publish --manifest-path dist_rust/Cargo.toml --allow-dirty",
     "publish:python": "python3 -m build ./dist_python --wheel --sdist && python3 -m twine upload ./dist_python/dist/*",
     "git-tag": "git add . && git commit -m \"chore: release v$(node -p \\\"require('./package.json').version\\\")\" && git tag v$(node -p \\\"require('./package.json').version\\\")",
     "check-uncommitted": "git diff --quiet && git diff --cached --quiet || (echo 'Uncommitted changes — commit before patch release' && exit 1)",
-    "postversion": "npm run bundle && npm run bundle:py && npm run bundle:rs && npm run publish:node && npm run publish:rust && npm run publish:python && npm run git-tag",
+    "postversion": "npm run bundle && npm run bundle:py && npm run publish:node && npm run publish:python && npm run git-tag",
     "patch": "npm run check-uncommitted && npm version patch --no-git-tag-version",
     "format": "biome format --write .",
     "lint": "biome lint .",
@@ -50,7 +48,6 @@
     "tsdown": "^0.12.9",
     "typescript": "^5",
     "vovk-cli": "^0.1.2",
-    "vovk-python": "^0.0.1",
-    "vovk-rust": "^0.0.1"
+    "vovk-python": "^0.0.1"
   }
 }

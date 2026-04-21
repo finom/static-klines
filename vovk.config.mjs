@@ -73,7 +73,6 @@ const sharedPackage = {
   },
   keywords: ['binance', 'klines', 'candles', 'ohlcv', 'crypto', 'vovk'],
   py_name: 'static_klines',
-  rs_name: 'static-klines',
 };
 
 const sharedReadme = {

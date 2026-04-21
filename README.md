@@ -1,6 +1,6 @@
 # static-klines
 
-**Goal:** offer a static, easily accessible, fast API and matching client libraries (TypeScript, Python, Rust) for historical Binance Spot klines.
+**Goal:** offer a static, easily accessible, fast API and matching client libraries (TypeScript, Python) for historical Binance Spot klines.
 
 Every `(interval, symbol, window)` tuple is pre-rendered at build time into a plain JSON file on GitHub Pages. No rate limits, no server-side compute, infinitely cacheable, globally CDN'd.
 
@@ -45,9 +45,8 @@ Auto-generated from the same Zod schemas the server uses:
 
 - **TypeScript** — `npx vovk bundle` → `./dist` → `npm publish ./dist`
 - **Python** — `npx vovk generate --from py --out ./dist_python` → `python -m build && twine upload`
-- **Rust** — `npx vovk generate --from rs --out ./dist_rust` → `cargo publish --manifest-path dist_rust/Cargo.toml`
 
-`npm run patch` chains the whole release: bump version → bundle all three → publish to npm / PyPI / crates.io → tag + push.
+`npm run patch` chains the whole release: bump version → bundle both → publish to npm and PyPI → tag + push.
 
 Or bypass the generators entirely: point any OpenAPI 3.1 tool at `/api/openapi.json`.
 
@@ -76,5 +75,5 @@ Requires **Node 24+** (native TypeScript stripping + decorators).
 ## Contributor notes
 
 - `.klines-cache/` and `.vovk-schema/` are both **intentionally committed**. The cache *is* the dataset; the schema is needed by `vovk generate` in CI.
-- The root `package.json` is `private: true` — it isn't itself an npm package. Published client libraries live under `./dist`, `./dist_python`, `./dist_rust`, each with its own manifest.
+- The root `package.json` is `private: true` — it isn't itself an npm package. Published client libraries live under `./dist` (TypeScript) and `./dist_python` (Python), each with its own manifest.
 - If you shift a start date or add an interval, wipe the corresponding cache subdirectory and re-scaffold — window alignment depends on the anchor.

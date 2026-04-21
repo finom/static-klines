@@ -23,7 +23,6 @@
 # bundled client packages (regenerated via `npx vovk bundle`)
 /dist
 /dist_python
-/dist_rust
 /tmp_prebundle
 
 # production
