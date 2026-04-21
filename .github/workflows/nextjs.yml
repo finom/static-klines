@@ -70,8 +70,12 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      # Use `npm run build`, not `next build` directly — our `prebuild` script
+      # regenerates `.vovk-client/` (which exposes the generated openapi + RPC
+      # schema that next build imports). Bypassing it = "Can't resolve
+      # '../.vovk-client/openapi.js'".
       - name: Build with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        run: npm run build
         env:
           BASE_PATH: /static-klines
       - name: Upload artifact
