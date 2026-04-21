@@ -11,6 +11,8 @@ Pre-rendered historical Binance Spot klines for the **top 10 USDT pairs**, serve
 
 Every `(interval, symbol, window)` tuple is pre-rendered at build time into a plain JSON file on GitHub Pages. No rate limits, no server-side compute, infinitely cacheable, globally CDN'd. The repo *is* the dataset.
 
+Under the hood it's a [Vovk.ts](https://vovk.dev) back-end deployed as a [static segment](https://vovk.dev/static-segment) — controllers are materialized into JSON files at build time, so the whole API ships as plain static assets with no runtime.
+
 > ⚠️ **Experimental — not audit-grade data.** This is a community cache of Binance's public REST API, refreshed once a day. Binance occasionally restates historical candles; a daily cache can't reflect that. Don't use it for trading or compliance — fine for ML datasets, charts, backtests, and exploratory analysis.
 
 ## Live site & documentation
