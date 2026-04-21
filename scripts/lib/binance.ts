@@ -1,4 +1,7 @@
-const BASE_URL = 'https://api.binance.com';
+// Public market-data endpoint. Same schema as api.binance.com, but not
+// US-geo-blocked — lets GitHub-hosted runners keep working. Override with
+// BINANCE_API_BASE if you need auth endpoints (not used by this repo).
+const BASE_URL = process.env.BINANCE_API_BASE ?? 'https://data-api.binance.vision';
 const MIN_REQUEST_GAP_MS = 100;
 const WEIGHT_BUDGET = 1200;
 const WEIGHT_PAUSE_AT = 1000;
