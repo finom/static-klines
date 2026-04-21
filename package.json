@@ -1,6 +1,6 @@
 {
   "name": "static-klines",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "Historical Binance spot klines, committed as static JSON and served via Next.js static export. This repo's package is intentionally private — published client libraries live under /dist and /dist_python.",
   "private": true,
   "type": "module",
@@ -20,7 +20,7 @@
     "bundle:py": "vovk generate --from py --out ./dist_python --origin https://finom.github.io/static-klines",
     "publish:node": "npm publish ./dist",
     "publish:python": "python3 -m build ./dist_python --wheel --sdist && python3 -m twine upload ./dist_python/dist/*",
-    "git-tag": "git add . && git commit -m \"chore: release v$(node -p \\\"require('./package.json').version\\\")\" && git tag v$(node -p \\\"require('./package.json').version\\\")",
+    "git-tag": "git add . && git commit -m \"chore: release v$npm_package_version\" && git tag \"v$npm_package_version\"",
     "check-uncommitted": "git diff --quiet && git diff --cached --quiet || (echo 'Uncommitted changes — commit before patch release' && exit 1)",
     "postversion": "npm run bundle && npm run bundle:py && npm run publish:node && npm run publish:python && npm run git-tag",
     "patch": "npm run check-uncommitted && npm version patch --no-git-tag-version",
