@@ -12,10 +12,10 @@ Interactive docs: `https://finom.github.io/static-klines/`
 
 ## 1. Raw REST endpoints
 
-### OpenAPI spec — served at the API root
+### OpenAPI spec
 
 ```
-GET /api
+GET /api/openapi.json
 ```
 
 Returns an OpenAPI 3.1 document describing every endpoint, every parameter enum, and the candle tuple. Feed it to Scalar, Swagger UI, or any OpenAPI-based client generator.
@@ -76,7 +76,7 @@ Pre-listing windows (symbol not yet on Binance) and future windows (scaffolded a
 ### Example: curl
 
 ```bash
-curl -s https://finom.github.io/static-klines/api | jq '.paths | keys'
+curl -s https://finom.github.io/static-klines/api/openapi.json | jq '.paths | keys'
 curl -s https://finom.github.io/static-klines/api/klines/symbols.json
 curl -s https://finom.github.io/static-klines/api/klines/start-dates/1d.json
 curl -s https://finom.github.io/static-klines/api/klines/1d/BTCUSDT/2018-01-01.json | jq '.[0]'
@@ -137,10 +137,10 @@ candles = KLinesAPI.get_klines_1d(
 If you don't want to use the TypeScript or Python clients, point any OpenAPI 3.1 tool at the API root:
 
 ```bash
-npx openapi-typescript https://finom.github.io/static-klines/api -o ./my-client.ts
+npx openapi-typescript https://finom.github.io/static-klines/api/openapi.json -o ./my-client.ts
 
 openapi-generator-cli generate \
-  -i https://finom.github.io/static-klines/api \
+  -i https://finom.github.io/static-klines/api/openapi.json \
   -g python -o ./my-python-client
 ```
 

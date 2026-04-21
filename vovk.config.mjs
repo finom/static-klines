@@ -41,7 +41,7 @@ const banner = `
 No rate limits, infinite cache lifetime, globally CDN'd. Every URL is a committed JSON file — the repo itself *is* the dataset.
 
 **Interactive docs:** ${origin}${basePath}/
-**OpenAPI spec:** ${apiRoot}  ← a GET on the API root returns the full OpenAPI 3.1 document
+**OpenAPI spec:** ${apiRoot}/openapi.json
 
 ### Try it — open any of these in a browser
 

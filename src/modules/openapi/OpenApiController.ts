@@ -4,9 +4,12 @@ import { openapi } from 'vovk-client/openapi';
 export default class OpenApiController {
   @operation({
     summary: 'OpenAPI 3.1 specification',
-    description: 'Full OpenAPI document describing this API. Served at the API root so `GET /api` returns the spec directly.',
+    description: 'Full OpenAPI document describing this API. Consume with Scalar, Swagger UI, or any OpenAPI-based client generator.',
     tags: ['meta'],
   })
-  @get('', { staticParams: [{}] })
+  // `@get('')` would make the route serve at /api — but /api is already a
+  // directory (it contains /api/klines/...), so Next.js static export fails
+  // with EISDIR trying to emit the body as a file. Keep it at /openapi.json.
+  @get('openapi.json', { staticParams: [{}] })
   static getSpec = () => openapi;
 }

@@ -18,7 +18,7 @@ Under the hood it's a [Vovk.ts](https://vovk.dev) back-end deployed as a [static
 ## Live site & documentation
 
 - 📖 **Full API documentation (interactive, Scalar):** **https://finom.github.io/static-klines/** — every endpoint with schemas, parameter enums, and copy-paste code samples in TS / Python / curl.
-- 🤖 **OpenAPI 3.1 spec (machine-readable):** https://finom.github.io/static-klines/api — feed this to any OpenAPI-compatible client generator.
+- 🤖 **OpenAPI 3.1 spec (machine-readable):** https://finom.github.io/static-klines/api/openapi.json — feed this to any OpenAPI-compatible client generator.
 - 📦 **TypeScript package docs:** https://www.npmjs.com/package/static-klines
 - 🐍 **Python package docs:** https://pypi.org/project/static-klines/
 
@@ -132,7 +132,7 @@ candles = KLinesAPI.get_klines_15m(
 
 `npm run patch` chains the whole release: bump version → bundle both → publish to npm and PyPI → tag + push.
 
-Or bypass the generators entirely: point any OpenAPI 3.1 tool at `/api` (the root endpoint returns the full spec).
+Or bypass the generators entirely: point any OpenAPI 3.1 tool at `/api/openapi.json`.
 
 ## Daily refresh
 
@@ -158,7 +158,7 @@ Requires **Node 24+** (native TypeScript stripping + decorators).
 
 ## Using this from Claude Code — skill installation
 
-This repo ships a Claude Code skill at [`.claude/skills/static-klines-usage/SKILL.md`](.claude/skills/static-klines-usage/SKILL.md). It teaches the agent how to call every endpoint, install the TypeScript or Python client, and resolve the calendar-aligned `startDate` enum — so you can say *"fetch me BTCUSDT daily candles for 2018 from static-klines"* and Claude will know exactly which URL to hit.
+This repo ships a Claude Code skill at [`skills/static-klines-usage/SKILL.md`](skills/static-klines-usage/SKILL.md) (also symlinked into `.claude/skills/` for local auto-discovery). It teaches the agent how to call every endpoint, install the TypeScript or Python client, and resolve the calendar-aligned `startDate` enum — so you can say *"fetch me BTCUSDT daily candles for 2018 from static-klines"* and Claude will know exactly which URL to hit.
 
 ### Install globally (use it from any directory)
 
@@ -170,7 +170,7 @@ This drops the skill into `~/.claude/skills/static-klines-usage/`. The skill aut
 
 ### Install project-local (just this repo)
 
-Already installed if you cloned this repo — the skill is committed at `.claude/skills/static-klines-usage/`. Claude Code discovers it automatically when you open the directory.
+Already installed if you cloned this repo — the skill is committed at `skills/static-klines-usage/` (with a symlink at `.claude/skills/static-klines-usage/` so Claude Code auto-discovers it when you open the directory).
 
 ```bash
 npx skills add finom/static-klines --skill static-klines-usage -a claude-code -y
@@ -181,7 +181,7 @@ npx skills add finom/static-klines --skill static-klines-usage -a claude-code -y
 
 ```bash
 git clone https://github.com/finom/static-klines /tmp/sk
-cp -r /tmp/sk/.claude/skills/static-klines-usage ~/.claude/skills/   # global
+cp -r /tmp/sk/skills/static-klines-usage ~/.claude/skills/   # global
 # or into your project's ./.claude/skills/
 ```
 
