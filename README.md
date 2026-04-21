@@ -13,10 +13,12 @@ Every `(interval, symbol, window)` tuple is pre-rendered at build time into a pl
 
 > ⚠️ **Experimental — not audit-grade data.** This is a community cache of Binance's public REST API, refreshed once a day. Binance occasionally restates historical candles; a daily cache can't reflect that. Don't use it for trading or compliance — fine for ML datasets, charts, backtests, and exploratory analysis.
 
-## Live site
+## Live site & documentation
 
-- **Interactive docs (Scalar):** https://finom.github.io/static-klines/
-- **OpenAPI spec:** https://finom.github.io/static-klines/api *(the API root serves the OpenAPI document directly)*
+- 📖 **Full API documentation (interactive, Scalar):** **https://finom.github.io/static-klines/** — every endpoint with schemas, parameter enums, and copy-paste code samples in TS / Python / curl.
+- 🤖 **OpenAPI 3.1 spec (machine-readable):** https://finom.github.io/static-klines/api — feed this to any OpenAPI-compatible client generator.
+- 📦 **TypeScript package docs:** https://www.npmjs.com/package/static-klines
+- 🐍 **Python package docs:** https://pypi.org/project/static-klines/
 
 ### Try it — open any of these
 
@@ -59,6 +61,8 @@ Auto-generated from the same Zod schemas the server uses.
 
 ### TypeScript
 
+📚 **Full API reference:** [npmjs.com/package/static-klines](https://www.npmjs.com/package/static-klines) — auto-generated, includes every endpoint with type signatures + runnable code samples.
+
 ```bash
 npm install static-klines
 ```
@@ -91,6 +95,8 @@ await KLinesAPI.getKlines15m({
 ```
 
 ### Python
+
+📚 **Full API reference:** [pypi.org/project/static-klines](https://pypi.org/project/static-klines/) — auto-generated, includes every endpoint with type hints + runnable code samples.
 
 ```bash
 pip install static-klines
