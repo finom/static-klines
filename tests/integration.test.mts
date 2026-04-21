@@ -10,11 +10,12 @@ import { START_DATES_1d } from '../src/config/start-dates.generated.ts';
 const apiRoot = process.env.TEST_API_ROOT ?? 'https://finom.github.io/static-klines/api';
 
 describe('raw REST endpoints (live)', () => {
-  test('openapi.json exposes every klines endpoint', async () => {
-    const res = await fetch(`${apiRoot}/openapi.json`);
+  test('API root serves the OpenAPI document', async () => {
+    const res = await fetch(apiRoot);
     assert.equal(res.status, 200);
     const spec = (await res.json()) as { paths: Record<string, unknown> };
     const paths = Object.keys(spec.paths);
+    assert.ok(paths.includes('/api'), 'self-reference — the root endpoint lists itself');
     assert.ok(paths.includes('/api/klines/symbols.json'), 'has symbols');
     assert.ok(paths.includes('/api/klines/start-dates/{interval}.json'), 'has start-dates');
     assert.ok(paths.includes('/api/klines/1d/{symbol}/{startDate}.json'), 'has 1d');

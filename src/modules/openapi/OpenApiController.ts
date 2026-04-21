@@ -4,9 +4,9 @@ import { openapi } from 'vovk-client/openapi';
 export default class OpenApiController {
   @operation({
     summary: 'OpenAPI 3.1 specification',
-    description: 'Full OpenAPI document describing this API. Consume with Scalar, Swagger UI, or any client generator.',
+    description: 'Full OpenAPI document describing this API. Served at the API root so `GET /api` returns the spec directly.',
     tags: ['meta'],
   })
-  @get('openapi.json', { staticParams: [{}] })
+  @get('', { staticParams: [{}] })
   static getSpec = () => openapi;
 }

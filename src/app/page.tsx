@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <ApiReferenceReact
       configuration={{
-        url: `${basePath}/api/openapi.json`,
+        url: `${basePath}/api`,
         hideClientButton: false,
         metaData: {
           title: 'static-klines — Binance spot klines as static JSON',

@@ -3,6 +3,7 @@
 [![CI](https://github.com/finom/static-klines/actions/workflows/nextjs.yml/badge.svg)](https://github.com/finom/static-klines/actions/workflows/nextjs.yml)
 [![npm version](https://img.shields.io/npm/v/static-klines.svg?label=npm%20%7C%20static-klines)](https://www.npmjs.com/package/static-klines)
 [![PyPI version](https://img.shields.io/pypi/v/static-klines.svg?label=PyPI%20%7C%20static-klines)](https://pypi.org/project/static-klines/)
+[![Vovk.ts](https://badgen.net/badge/Built%20with/Vovk.ts/333333?icon=https://vovk.dev/icon-white.svg)](https://vovk.dev)
 
 Pre-rendered historical Binance Spot klines for the **top 10 USDT pairs**, served as plain static JSON on GitHub Pages.
 
@@ -15,7 +16,7 @@ Every `(interval, symbol, window)` tuple is pre-rendered at build time into a pl
 ## Live site
 
 - **Interactive docs (Scalar):** https://finom.github.io/static-klines/
-- **OpenAPI spec:** https://finom.github.io/static-klines/api/openapi.json
+- **OpenAPI spec:** https://finom.github.io/static-klines/api *(the API root serves the OpenAPI document directly)*
 
 ### Try it — open any of these
 
@@ -61,7 +62,7 @@ Auto-generated from the same Zod schemas the server uses:
 
 `npm run patch` chains the whole release: bump version → bundle both → publish to npm and PyPI → tag + push.
 
-Or bypass the generators entirely: point any OpenAPI 3.1 tool at `/api/openapi.json`.
+Or bypass the generators entirely: point any OpenAPI 3.1 tool at `/api` (the root endpoint returns the full spec).
 
 ## Daily refresh
 
@@ -84,6 +85,37 @@ npm run check              # Biome format + lint
 ```
 
 Requires **Node 24+** (native TypeScript stripping + decorators).
+
+## Using this from Claude Code — skill installation
+
+This repo ships a Claude Code skill at [`.claude/skills/static-klines-usage/SKILL.md`](.claude/skills/static-klines-usage/SKILL.md). It teaches the agent how to call every endpoint, install the TypeScript or Python client, and resolve the calendar-aligned `startDate` enum — so you can say *"fetch me BTCUSDT daily candles for 2018 from static-klines"* and Claude will know exactly which URL to hit.
+
+### Install globally (use it from any directory)
+
+```bash
+npx skills add finom/static-klines --skill static-klines-usage -g -a claude-code -y
+```
+
+This drops the skill into `~/.claude/skills/static-klines-usage/`. The skill autoloads on any prompt mentioning Binance klines, OHLCV history, or candle-fetching from this API.
+
+### Install project-local (just this repo)
+
+Already installed if you cloned this repo — the skill is committed at `.claude/skills/static-klines-usage/`. Claude Code discovers it automatically when you open the directory.
+
+```bash
+npx skills add finom/static-klines --skill static-klines-usage -a claude-code -y
+# (omit -g → installs to ./.claude/skills/ in the current project)
+```
+
+### Manual install (no CLI)
+
+```bash
+git clone https://github.com/finom/static-klines /tmp/sk
+cp -r /tmp/sk/.claude/skills/static-klines-usage ~/.claude/skills/   # global
+# or into your project's ./.claude/skills/
+```
+
+Verify with `ls ~/.claude/skills/` — no further setup; the next Claude Code session picks it up.
 
 ## Contributor notes
 

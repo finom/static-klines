@@ -4093,11 +4093,11 @@
       "prefix": "",
       "handlers": {
         "getSpec": {
-          "path": "openapi.json",
+          "path": "",
           "httpMethod": "GET",
           "operationObject": {
             "summary": "OpenAPI 3.1 specification",
-            "description": "Full OpenAPI document describing this API. Consume with Scalar, Swagger UI, or any client generator.",
+            "description": "Full OpenAPI document describing this API. Served at the API root so `GET /api` returns the spec directly.",
             "tags": [
               "meta"
             ]
