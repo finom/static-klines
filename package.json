@@ -1,6 +1,6 @@
 {
   "name": "static-klines",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Historical Binance spot klines, committed as static JSON and served via Next.js static export. This repo's package is intentionally private — published client libraries live under /dist, /dist_python, /dist_rust.",
   "private": true,
   "type": "module",
