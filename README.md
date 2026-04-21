@@ -113,13 +113,13 @@ symbols = KLinesAPI.get_symbols()
 starts = KLinesAPI.get_start_dates(params={"interval": "1d"})
 # ['2016-01-01', '2018-01-01', '2020-01-01', ...]
 
-candles = KLinesAPI.get_klines_1d(
+candles = KLinesAPI.get_klines_1_d(
     params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
 )
 # [[1514764800000, '13715.65000000', '13818.55000000', ...], ...]
 
 # The default api_root is already set; pass it explicitly if you want to:
-candles = KLinesAPI.get_klines_15m(
+candles = KLinesAPI.get_klines_15_m(
     params={"symbol": "SOLUSDT", "startDate": "2025-01-06"},
     api_root="https://finom.github.io/static-klines/api",
 )

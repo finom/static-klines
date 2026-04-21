@@ -44,8 +44,8 @@ class PythonClientLiveTests(unittest.TestCase):
         # Anchor is 2016-01-01 (2-year stride, even years)
         self.assertEqual(dates[0], "2016-01-01")
 
-    def test_get_klines_1d_btcusdt_2018(self) -> None:
-        candles = KLinesAPI.get_klines_1d(
+    def test_get_klines_1_d_btcusdt_2018(self) -> None:
+        candles = KLinesAPI.get_klines_1_d(
             params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
             api_root=API_ROOT,
         )
@@ -57,8 +57,8 @@ class PythonClientLiveTests(unittest.TestCase):
         self.assertEqual(first[0], 1514764800000)
         self.assertIsInstance(first[1], str, "open price is a stringified decimal")
 
-    def test_get_klines_15m_solusdt_week(self) -> None:
-        candles = KLinesAPI.get_klines_15m(
+    def test_get_klines_15_m_solusdt_week(self) -> None:
+        candles = KLinesAPI.get_klines_15_m(
             params={"symbol": "SOLUSDT", "startDate": "2025-01-06"},
             api_root=API_ROOT,
         )
@@ -80,8 +80,8 @@ class DefaultApiRootTests(unittest.TestCase):
         self.assertIn("2018-01-01", dates)
         self.assertEqual(dates[0], "2016-01-01")
 
-    def test_get_klines_1d_no_api_root(self) -> None:
-        candles = KLinesAPI.get_klines_1d(
+    def test_get_klines_1_d_no_api_root(self) -> None:
+        candles = KLinesAPI.get_klines_1_d(
             params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
         )
         self.assertGreater(len(candles), 0)

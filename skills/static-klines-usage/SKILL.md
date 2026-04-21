@@ -120,13 +120,13 @@ from static_klines import KLinesAPI
 
 symbols = KLinesAPI.get_symbols()
 start_dates = KLinesAPI.get_start_dates(params={"interval": "1d"})
-candles = KLinesAPI.get_klines_1d(params={"symbol": "BTCUSDT", "startDate": "2018-01-01"})
+candles = KLinesAPI.get_klines_1_d(params={"symbol": "BTCUSDT", "startDate": "2018-01-01"})
 ```
 
 `api_root=` is optional — defaults to the production URL baked into the package. Pass it if you need to hit a different host:
 
 ```python
-candles = KLinesAPI.get_klines_1d(
+candles = KLinesAPI.get_klines_1_d(
     params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
     api_root="https://finom.github.io/static-klines/api",
 )
