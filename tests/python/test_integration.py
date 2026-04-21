@@ -67,5 +67,26 @@ class PythonClientLiveTests(unittest.TestCase):
         self.assertEqual(candles[0][0], 1736121600000)  # 2025-01-06 UTC
 
 
+class DefaultApiRootTests(unittest.TestCase):
+    """Every client method should work without `api_root=` — the production
+    URL is baked into the generated package. These tests always hit
+    https://finom.github.io/static-klines/api."""
+
+    def test_get_symbols_no_args(self) -> None:
+        self.assertEqual(KLinesAPI.get_symbols(), SYMBOLS)
+
+    def test_get_start_dates_no_api_root(self) -> None:
+        dates = KLinesAPI.get_start_dates(params={"interval": "1d"})
+        self.assertIn("2018-01-01", dates)
+        self.assertEqual(dates[0], "2016-01-01")
+
+    def test_get_klines_1d_no_api_root(self) -> None:
+        candles = KLinesAPI.get_klines_1d(
+            params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
+        )
+        self.assertGreater(len(candles), 0)
+        self.assertEqual(candles[0][0], 1514764800000)
+
+
 if __name__ == "__main__":
     unittest.main()

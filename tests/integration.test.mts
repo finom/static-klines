@@ -112,3 +112,33 @@ describe('TypeScript RPC client (./dist, live API)', () => {
     assert.equal(url, `${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json`);
   });
 });
+
+// Baked-in default apiRoot: every client method should be callable WITHOUT
+// passing apiRoot — it falls back to the production URL compiled into the
+// bundle. These tests always hit https://finom.github.io/static-klines/api.
+describe('TypeScript client — apiRoot is optional', () => {
+  test('getSymbols() with no arguments uses the baked-in default', async () => {
+    const symbols = await KLinesAPI.getSymbols();
+    assert.deepEqual(symbols, [...PAIRS]);
+  });
+
+  test('getStartDates without apiRoot uses the baked-in default', async () => {
+    const dates = await KLinesAPI.getStartDates({ params: { interval: '1d' } });
+    assert.deepEqual(dates, [...START_DATES_1d]);
+  });
+
+  test('getKlines1d without apiRoot uses the baked-in default', async () => {
+    const candles = await KLinesAPI.getKlines1d({
+      params: { symbol: 'BTCUSDT', startDate: '2018-01-01' },
+    });
+    assert.ok(candles.length > 0);
+    assert.equal(candles[0][0], Date.UTC(2018, 0, 1));
+  });
+
+  test('default apiRoot points at production', () => {
+    const url = KLinesAPI.getKlines1d.getURL({
+      params: { symbol: 'BTCUSDT', startDate: '2018-01-01' },
+    });
+    assert.equal(url, 'https://finom.github.io/static-klines/api/klines/1d/BTCUSDT/2018-01-01.json');
+  });
+});
