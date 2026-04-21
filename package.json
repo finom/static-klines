@@ -1,0 +1,37 @@
+{
+  "name": "static-klines",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vovk dev --next-dev",
+    "build": "next build",
+    "start": "next start",
+    "prebuild": "vovk generate",
+    "fetch:klines": "node scripts/fetch-klines.ts",
+    "fetch:klines:dry": "DRY_RUN=1 node scripts/fetch-klines.ts",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "next": "16.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "vovk": "^3.2.2",
+    "vovk-ajv": "^0.0.2",
+    "vovk-client": "^1.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5",
+    "vovk-cli": "^0.1.2"
+  }
+}
