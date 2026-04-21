@@ -348,7 +348,7 @@ export default class KLinesController {
       symbol: Symbol,
       startDate: z
         .enum(START_DATES_1M)
-        .meta({ description: '1M window start date (1st of Jan, every 10 years, UTC). Window covers 10 calendar years of monthly candles.' }),
+        .meta({ description: '1M window start date (1st of Jan, every 20 years, UTC). Window covers 20 calendar years of monthly candles (≤240).' }),
     }),
     output: Candles,
   }).handle((_req, { symbol, startDate }) => loadCandles('1M', symbol, startDate));

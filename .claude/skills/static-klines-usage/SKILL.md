@@ -61,7 +61,7 @@ Each file holds the fully-closed candles for one calendar-aligned window (always
 | `1d`   | 2 years (Jan 1, even years) | 2016-01-01 | 732 |
 | `3d`   | 5 years (Jan 1)             | 2015-01-01 | 609 |
 | `1w`   | 10 years (Jan 1)            | 2010-01-01 | 522 |
-| `1M`   | 10 years (Jan 1)            | 2010-01-01 | 120 |
+| `1M`   | 20 years (Jan 1)            | 2010-01-01 | 240 |
 
 Candles are in Binance's native 12-tuple shape:
 

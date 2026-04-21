@@ -47,7 +47,7 @@ Every `startDate` is a real, predictable calendar boundary — you can guess the
 | `1d`   | 2 years (Jan 1, even years) | 2016-01-01 | 732 |
 | `3d`   | 5 years (Jan 1)             | 2015-01-01 | 609 |
 | `1w`   | 10 years (Jan 1)            | 2010-01-01 | 522 |
-| `1M`   | 10 years (Jan 1)            | 2010-01-01 | 120 |
+| `1M`   | 20 years (Jan 1)            | 2010-01-01 | 240 |
 
 Pairs that listed later than the interval's anchor return empty `[]` for leading windows; iterate forward. Future windows (through 2040-01-01) are scaffolded empty and populated daily.
 

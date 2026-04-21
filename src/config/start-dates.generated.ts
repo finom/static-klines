@@ -2037,7 +2037,6 @@ export type StartDate_1w = (typeof START_DATES_1w)[number];
 
 export const START_DATES_1M = [
   '2010-01-01',
-  '2020-01-01',
   '2030-01-01',
 ] as const;
 

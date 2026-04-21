@@ -55,7 +55,7 @@ export const WINDOW_STRIDE: Record<Interval, WindowStride> = {
   '1d':  { kind: 'months', months: 24 },
   '3d':  { kind: 'months', months: 60 },
   '1w':  { kind: 'months', months: 120 },
-  '1M':  { kind: 'months', months: 120 },
+  '1M':  { kind: 'months', months: 240 },
 };
 
 export const WINDOW_STRIDE_LABEL: Record<Interval, string> = {
@@ -70,7 +70,7 @@ export const WINDOW_STRIDE_LABEL: Record<Interval, string> = {
   '1d':  '2 calendar years',
   '3d':  '5 calendar years',
   '1w':  '10 calendar years',
-  '1M':  '10 calendar years',
+  '1M':  '20 calendar years',
 };
 
 const MS_BY_INTERVAL: Record<Exclude<Interval, '1M'>, number> = {
