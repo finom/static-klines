@@ -17,10 +17,14 @@
 /.next/
 /out/
 
-# vovk
-/.vovk-schema/
-
+# .vovk-schema/ is INTENTIONALLY committed (needed by vovk generate in CI)
 # .klines-cache/ is INTENTIONALLY committed
+
+# bundled client packages (regenerated via `npx vovk bundle`)
+/dist
+/dist_python
+/dist_rust
+/tmp_prebundle
 
 # production
 /build

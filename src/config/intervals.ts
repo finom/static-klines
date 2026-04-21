@@ -15,19 +15,62 @@ export const INTERVALS = [
 
 export type Interval = (typeof INTERVALS)[number];
 
+// The first window's start date for each interval. Every window of that
+// interval begins `WINDOW_STRIDE[interval]` after the previous one, so all
+// filenames are predictable calendar dates anchored here. Keep these aligned
+// to a natural calendar boundary (Monday, 1st of month, 1st of year).
 export const INTERVAL_START_DATES: Record<Interval, string> = {
-  '15m': '2020-01-01',
-  '30m': '2019-01-01',
-  '1h': '2018-01-01',
-  '2h': '2017-08-17',
-  '4h': '2017-08-17',
-  '6h': '2017-08-17',
-  '8h': '2017-08-17',
-  '12h': '2017-08-17',
-  '1d': '2017-08-17',
-  '3d': '2017-08-17',
-  '1w': '2017-08-17',
-  '1M': '2017-08-01',
+  '15m': '2023-01-02', // first Monday of 2023
+  '30m': '2022-01-03', // first Monday of 2022
+  '1h':  '2018-01-01',
+  '2h':  '2017-07-01', // bi-month containing Binance launch (2017-08-17)
+  '4h':  '2017-07-01', // quarter containing launch
+  '6h':  '2017-07-01', // half-year containing launch
+  '8h':  '2017-07-01',
+  '12h': '2017-01-01',
+  '1d':  '2016-01-01', // 2-year window containing launch (even-year anchored)
+  '3d':  '2015-01-01', // 5-year window
+  '1w':  '2010-01-01', // 10-year window
+  '1M':  '2010-01-01',
+};
+
+export const END_DATE_EXCLUSIVE_ISO = '2040-01-01';
+export const END_DATE_EXCLUSIVE_MS = Date.UTC(2040, 0, 1);
+
+export const MAX_CANDLES_PER_WINDOW = 1000;
+
+type WindowStride =
+  | { kind: 'days'; days: number }
+  | { kind: 'months'; months: number };
+
+export const WINDOW_STRIDE: Record<Interval, WindowStride> = {
+  '15m': { kind: 'days', days: 7 },
+  '30m': { kind: 'days', days: 14 },
+  '1h':  { kind: 'months', months: 1 },
+  '2h':  { kind: 'months', months: 2 },
+  '4h':  { kind: 'months', months: 3 },
+  '6h':  { kind: 'months', months: 6 },
+  '8h':  { kind: 'months', months: 6 },
+  '12h': { kind: 'months', months: 12 },
+  '1d':  { kind: 'months', months: 24 },
+  '3d':  { kind: 'months', months: 60 },
+  '1w':  { kind: 'months', months: 120 },
+  '1M':  { kind: 'months', months: 120 },
+};
+
+export const WINDOW_STRIDE_LABEL: Record<Interval, string> = {
+  '15m': '1 week (Monday-aligned)',
+  '30m': '2 weeks (Monday-aligned)',
+  '1h':  '1 calendar month',
+  '2h':  '2 calendar months',
+  '4h':  '1 calendar quarter',
+  '6h':  '6 months (Jan/Jul)',
+  '8h':  '6 months (Jan/Jul)',
+  '12h': '1 calendar year',
+  '1d':  '2 calendar years',
+  '3d':  '5 calendar years',
+  '1w':  '10 calendar years',
+  '1M':  '10 calendar years',
 };
 
 const MS_BY_INTERVAL: Record<Exclude<Interval, '1M'>, number> = {
@@ -48,13 +91,16 @@ export function intervalMs(interval: Interval): number | null {
   return interval === '1M' ? null : MS_BY_INTERVAL[interval];
 }
 
-export function startDateMs(interval: Interval): number {
-  const iso = INTERVAL_START_DATES[interval];
+function isoToMs(iso: string): number {
   return Date.UTC(
     Number.parseInt(iso.slice(0, 4), 10),
     Number.parseInt(iso.slice(5, 7), 10) - 1,
     Number.parseInt(iso.slice(8, 10), 10),
   );
+}
+
+export function startDateMs(interval: Interval): number {
+  return isoToMs(INTERVAL_START_DATES[interval]);
 }
 
 export function nextCandleOpenTime(openTime: number, interval: Interval): number {
@@ -63,4 +109,52 @@ export function nextCandleOpenTime(openTime: number, interval: Interval): number
     return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
   }
   return openTime + MS_BY_INTERVAL[interval];
+}
+
+export function windowFileBasename(openTime: number): string {
+  const d = new Date(openTime);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+export function windowFileName(openTime: number): string {
+  return `${windowFileBasename(openTime)}.json`;
+}
+
+export function windowStartForOpenTime(interval: Interval, time: number): number {
+  const anchor = startDateMs(interval);
+  const stride = WINDOW_STRIDE[interval];
+  if (stride.kind === 'days') {
+    const daysFromAnchor = Math.floor((time - anchor) / 86_400_000);
+    const alignedDays = daysFromAnchor - ((daysFromAnchor % stride.days) + stride.days) % stride.days;
+    return anchor + alignedDays * 86_400_000;
+  }
+  const t = new Date(time);
+  const a = new Date(anchor);
+  const monthsFromAnchor =
+    (t.getUTCFullYear() - a.getUTCFullYear()) * 12 + (t.getUTCMonth() - a.getUTCMonth());
+  const alignedMonths =
+    monthsFromAnchor - ((monthsFromAnchor % stride.months) + stride.months) % stride.months;
+  return Date.UTC(a.getUTCFullYear(), a.getUTCMonth() + alignedMonths, 1);
+}
+
+export function nextWindowStart(interval: Interval, windowStart: number): number {
+  const stride = WINDOW_STRIDE[interval];
+  if (stride.kind === 'days') {
+    return windowStart + stride.days * 86_400_000;
+  }
+  const d = new Date(windowStart);
+  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + stride.months, 1);
+}
+
+export function windowStartsForInterval(interval: Interval): number[] {
+  const starts: number[] = [];
+  let w = startDateMs(interval);
+  while (w < END_DATE_EXCLUSIVE_MS) {
+    starts.push(w);
+    w = nextWindowStart(interval, w);
+  }
+  return starts;
 }

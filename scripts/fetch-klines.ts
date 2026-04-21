@@ -1,23 +1,26 @@
 import {
   INTERVALS,
   type Interval,
-  intervalMs,
   nextCandleOpenTime,
+  nextWindowStart,
   startDateMs,
+  windowFileName,
+  windowStartForOpenTime,
 } from '../src/config/intervals.ts';
 import { PAIRS } from '../src/config/pairs.ts';
 import { fetchKlines, type RawCandle } from './lib/binance.ts';
 import {
   cacheDir,
-  fileNameForOpenTime,
   listCachedFiles,
   MAX_PER_FILE,
   mergeCandles,
   readCachedFile,
+  scaffoldEmptyWindows,
   writeCachedFile,
 } from './lib/cache.ts';
 
 const DRY_RUN = process.env.DRY_RUN === '1';
+const SKIP_FETCH = process.env.SKIP_FETCH === '1';
 const FETCH_LIMIT_PAIRS = process.env.FETCH_LIMIT_PAIRS?.split(',')
   .map((s) => s.trim())
   .filter(Boolean);
@@ -35,43 +38,19 @@ const intervalsToProcess = FETCH_LIMIT_INTERVALS?.length
 
 const MAX_EMPTY_WINDOWS = 200;
 
-function windowStartForOpenTime(interval: Interval, openTime: number): number {
-  const start = startDateMs(interval);
-  if (interval === '1M') return start;
-  const ms = intervalMs(interval);
-  if (ms === null) return start;
-  const windowMs = ms * MAX_PER_FILE;
-  const offset = openTime - start;
-  return start + Math.floor(offset / windowMs) * windowMs;
-}
-
-function nextWindowStart(interval: Interval, windowStart: number): number {
-  if (interval === '1M') {
-    const d = new Date(windowStart);
-    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + MAX_PER_FILE, 1);
-  }
-  const ms = intervalMs(interval);
-  if (ms === null) return windowStart;
-  return windowStart + ms * MAX_PER_FILE;
-}
-
 async function processPairInterval(symbol: string, interval: Interval): Promise<void> {
   const cachedFiles = await listCachedFiles(symbol, interval);
   const initialStart = startDateMs(interval);
 
-  let resumeTime: number;
-  if (cachedFiles.length === 0) {
-    resumeTime = initialStart;
-  } else {
-    const lastFile = cachedFiles[cachedFiles.length - 1];
-    const candles = await readCachedFile(symbol, interval, lastFile);
-    if (candles.length === 0) {
-      resumeTime = initialStart;
-    } else {
-      const last = candles[candles.length - 1];
-      resumeTime = nextCandleOpenTime(last[0], interval);
+  let lastPopulated: RawCandle | null = null;
+  for (let i = cachedFiles.length - 1; i >= 0; i--) {
+    const candles = await readCachedFile(symbol, interval, cachedFiles[i]);
+    if (candles.length > 0) {
+      lastPopulated = candles[candles.length - 1];
+      break;
     }
   }
+  const resumeTime = lastPopulated ? nextCandleOpenTime(lastPopulated[0], interval) : initialStart;
 
   const now = Date.now();
   let startTime = resumeTime;
@@ -104,7 +83,7 @@ async function processPairInterval(symbol: string, interval: Interval): Promise<
 
     emptyWindowsSeen = 0;
 
-    const filename = fileNameForOpenTime(windowStart);
+    const filename = windowFileName(windowStart);
     if (DRY_RUN) {
       console.log(
         `[DRY] would write ${closed.length} candles to ${cacheDir(symbol, interval)}/${filename}`,
@@ -124,11 +103,33 @@ async function processPairInterval(symbol: string, interval: Interval): Promise<
   }
 }
 
+async function scaffoldAll(): Promise<void> {
+  let total = 0;
+  for (const symbol of pairsToProcess) {
+    for (const interval of intervalsToProcess) {
+      const created = await scaffoldEmptyWindows(symbol, interval);
+      if (created > 0) {
+        console.log(`[${symbol} ${interval}] scaffolded ${created} empty window file(s)`);
+      }
+      total += created;
+    }
+  }
+  console.log(`Scaffolded ${total} empty window file(s) in total`);
+}
+
 async function main(): Promise<void> {
   console.log('Pairs:', pairsToProcess.join(', '));
   console.log('Intervals:', intervalsToProcess.join(', '));
   console.log('Dry run:', DRY_RUN);
+  console.log('Skip fetch:', SKIP_FETCH);
   console.log('---');
+
+  await scaffoldAll();
+
+  if (SKIP_FETCH) {
+    console.log('SKIP_FETCH=1 — skipping Binance fetch loop');
+    return;
+  }
 
   for (const symbol of pairsToProcess) {
     for (const interval of intervalsToProcess) {
