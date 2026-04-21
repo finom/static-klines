@@ -95,9 +95,13 @@ Concurrency is set to `cancel-in-progress: false` so overlapping triggers queue 
 
 Three auto-generated, type-safe clients are published from the same Zod schemas the server uses:
 
-- **TypeScript** — `npx vovk bundle` → `./dist` → `npm publish`
-- **Python** — `npx vovk bundle --from-templates py` → `./dist_python` → `twine upload`
-- **Rust** — `npx vovk bundle --from-templates rs` → `./dist_rust` → `cargo publish`
+- **TypeScript** — `npx vovk bundle` → bundles via tsdown → `./dist` → `npm publish ./dist`
+- **Python** — `npx vovk generate --from py --out ./dist_python` → `python -m build && twine upload`
+- **Rust** — `npx vovk generate --from rs --out ./dist_rust` → `cargo publish --manifest-path dist_rust/Cargo.toml`
+
+Only `vovk bundle` goes through tsdown (TypeScript-only). The Python and Rust generators emit ready-to-publish source packages directly via `vovk generate`.
+
+Combined, `npm run patch` runs `check-uncommitted` → `npm version patch` → a `postversion` hook that bundles TS, generates Python + Rust packages, publishes all three registries, then tags + pushes git.
 
 See [`.claude/skills/static-klines-usage/SKILL.md`](.claude/skills/static-klines-usage/SKILL.md) for full usage examples.
 

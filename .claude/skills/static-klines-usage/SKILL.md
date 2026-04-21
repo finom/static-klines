@@ -76,12 +76,12 @@ All parameter enums, output shapes, and per-field descriptions come directly fro
 
 ## 3. Python client (vovk-python)
 
-The Python generator is installed and run from this repo; it emits a real Python package to `./dist_python`.
+The Python generator is installed and run from this repo; it emits a real Python package to `./dist_python`. Note: `vovk bundle` is TypeScript-only — Python and Rust use `vovk generate` instead.
 
 ```bash
 # from the static-klines repo
 npm i -D vovk-python
-npx vovk bundle --from-templates py   # emits ./dist_python
+npx vovk generate --from py --out ./dist_python --origin https://<owner>.github.io/static-klines/api
 cd dist_python && python -m build && twine upload dist/*
 ```
 
@@ -100,8 +100,8 @@ candles = KLinesAPI.get_klines_1d(
 
 ```bash
 npm i -D vovk-rust
-npx vovk bundle --from-templates rs   # emits ./dist_rust
-cd dist_rust && cargo publish
+npx vovk generate --from rs --out ./dist_rust --origin https://<owner>.github.io/static-klines/api
+cargo publish --manifest-path dist_rust/Cargo.toml
 ```
 
 Consumer usage:
