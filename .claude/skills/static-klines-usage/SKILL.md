@@ -20,9 +20,26 @@ GET {base}/api/klines/{interval}/{symbol}/{startDate}.json
 
 - `interval` — one of `15m`, `30m`, `1h`, `2h`, `4h`, `6h`, `8h`, `12h`, `1d`, `3d`, `1w`, `1M`.
 - `symbol` — one of `BTCUSDT`, `ETHUSDT`, `BNBUSDT`, `SOLUSDT`, `XRPUSDT`, `ADAUSDT`, `DOGEUSDT`, `AVAXUSDT`, `LINKUSDT`, `DOTUSDT`.
-- `startDate` — the window-start date in `YYYY-MM-DD` (UTC). Must exactly match one of the allowed start dates for the given interval — see `/api/openapi.json` or `src/config/start-dates.generated.ts` for the full enum.
+- `startDate` — the window-start date in `YYYY-MM-DD` (UTC). Calendar-aligned (Monday of an ISO week, 1st of a month, 1st of Jan/Apr/Jul/Oct, etc.). Must exactly match one of the allowed start dates for the given interval — call `GET {base}/api/klines/start-dates/{interval}.json` for the runtime enum.
 
-Each file contains up to **1000 fully-closed candles** in Binance's native 12-tuple shape:
+Each file holds the fully-closed Binance spot candles for one calendar-aligned window (always ≤ 1000 candles, so you can drop a file straight into a Binance-style tuple parser):
+
+| Interval | Window | First anchor | ≤ candles/file |
+|---------:|:-------|:-------------|:---------------|
+| `15m`  | 1 ISO week (Mon)            | 2023-01-02 | 672 |
+| `30m`  | 2 ISO weeks (Mon)           | 2022-01-03 | 672 |
+| `1h`   | 1 month (1st)               | 2018-01-01 | 744 |
+| `2h`   | 2 months (1st)              | 2017-07-01 | 732 |
+| `4h`   | 1 quarter (Jan/Apr/Jul/Oct) | 2017-07-01 | 546 |
+| `6h`   | 6 months (Jan/Jul)          | 2017-07-01 | 732 |
+| `8h`   | 6 months (Jan/Jul)          | 2017-07-01 | 546 |
+| `12h`  | 1 year (Jan 1)              | 2017-01-01 | 732 |
+| `1d`   | 2 years (Jan 1, even years) | 2016-01-01 | 732 |
+| `3d`   | 5 years (Jan 1)             | 2015-01-01 | 609 |
+| `1w`   | 10 years (Jan 1)            | 2010-01-01 | 522 |
+| `1M`   | 10 years (Jan 1)            | 2010-01-01 | 120 |
+
+Candles are in Binance's native 12-tuple shape:
 
 ```json
 [
@@ -130,7 +147,7 @@ openapi-generator-cli generate \
 
 ## 6. Gotchas
 
-- **Start-date alignment**: `startDate` is not arbitrary — it's a window-start timestamp derived from `startDate + N × (intervalMs × 1000)`. Pick from the generated enum; any other value returns 404.
+- **Start-date alignment**: every `startDate` is a real calendar boundary (Monday for 15m/30m, 1st of month for 1h/2h, 1st of quarter for 4h, etc. — see the table above). Pick from the runtime enum (`/api/klines/start-dates/{interval}.json`); any other value returns 404.
 - **Decimal precision**: all OHLCV values are returned as strings. Convert to `Decimal` / `BigDecimal`, not float, if you care about precision.
 - **Pre-listing windows**: pairs that listed later than the interval's configured start date return `[]` for early windows. Iterate forward until you hit the first non-empty window.
 - **Future windows**: windows through 2040-01-01 are scaffolded with `[]` and filled in daily by GitHub Actions. If you want live data, re-fetch the latest window each call.
