@@ -98,12 +98,12 @@ const candles = await KLinesAPI.getKlines1d({
 });
 ```
 
-The default `apiRoot` is the production URL. Override for a fork or preview deploy:
+`apiRoot` is optional — the default `https://finom.github.io/static-klines/api` is baked into the bundled client. Pass it explicitly if you want to be explicit or hit a different host:
 
 ```ts
 const candles = await KLinesAPI.getKlines1d({
   params: { symbol: 'BTCUSDT', startDate: '2018-01-01' },
-  apiRoot: 'https://my-fork.github.io/static-klines/api',
+  apiRoot: 'https://finom.github.io/static-klines/api',
 });
 ```
 
@@ -123,7 +123,14 @@ start_dates = KLinesAPI.get_start_dates(params={"interval": "1d"})
 candles = KLinesAPI.get_klines_1d(params={"symbol": "BTCUSDT", "startDate": "2018-01-01"})
 ```
 
-Override `api_root=` the same way.
+`api_root=` is optional — defaults to the production URL baked into the package. Pass it if you need to hit a different host:
+
+```python
+candles = KLinesAPI.get_klines_1d(
+    params={"symbol": "BTCUSDT", "startDate": "2018-01-01"},
+    api_root="https://finom.github.io/static-klines/api",
+)
+```
 
 ## 4. Extracting OpenAPI for other client generators
 
