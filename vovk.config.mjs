@@ -13,9 +13,9 @@ const PAIRS = [
 ];
 
 const INTERVAL_WINDOWS = [
-  ['15m', '1 ISO week (Mon)',            '2023-01-02', '672'],
-  ['30m', '2 ISO weeks (Mon)',           '2022-01-03', '672'],
-  ['1h',  '1 month (1st)',               '2018-01-01', '744'],
+  ['15m', '1 ISO week (Mon)',            '2024-12-30', '672'],
+  ['30m', '2 ISO weeks (Mon)',           '2024-01-01', '672'],
+  ['1h',  '1 month (1st)',               '2022-01-01', '744'],
   ['2h',  '2 months (1st)',              '2017-07-01', '732'],
   ['4h',  '1 quarter (Jan/Apr/Jul/Oct)', '2017-07-01', '546'],
   ['6h',  '6 months (Jan/Jul)',          '2017-07-01', '732'],
@@ -41,7 +41,7 @@ const banner = `
 No rate limits, infinite cache lifetime, globally CDN'd. Every URL is a committed JSON file — the repo itself *is* the dataset.
 
 **Interactive docs:** ${origin}${basePath}/
-**OpenAPI spec:** ${apiRoot}  ← `GET /api` returns the full OpenAPI 3.1 document
+**OpenAPI spec:** ${apiRoot}  ← a GET on the API root returns the full OpenAPI 3.1 document
 
 ### Try it — open any of these in a browser
 
@@ -49,7 +49,7 @@ No rate limits, infinite cache lifetime, globally CDN'd. Every URL is a committe
 - [${apiRoot}/klines/start-dates/1d.json](${apiRoot}/klines/start-dates/1d.json) — every valid \`startDate\` for the 1d interval
 - [${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json](${apiRoot}/klines/1d/BTCUSDT/2018-01-01.json) — 2 years of BTCUSDT daily candles starting Jan 1, 2018
 - [${apiRoot}/klines/1h/ETHUSDT/2024-01-01.json](${apiRoot}/klines/1h/ETHUSDT/2024-01-01.json) — January 2024 hourly candles for ETHUSDT
-- [${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json](${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json) — first week of 2024, 15-minute SOLUSDT candles
+- [${apiRoot}/klines/15m/SOLUSDT/2025-01-06.json](${apiRoot}/klines/15m/SOLUSDT/2025-01-06.json) — first full week of 2025, 15-minute SOLUSDT candles
 
 ### Supported symbols
 

@@ -59,12 +59,12 @@ class PythonClientLiveTests(unittest.TestCase):
 
     def test_get_klines_15m_solusdt_week(self) -> None:
         candles = KLinesAPI.get_klines_15m(
-            params={"symbol": "SOLUSDT", "startDate": "2024-01-01"},
+            params={"symbol": "SOLUSDT", "startDate": "2025-01-06"},
             api_root=API_ROOT,
         )
         # 7 days × 24 h × 4 (15-min slices) = 672
         self.assertEqual(len(candles), 672)
-        self.assertEqual(candles[0][0], 1704067200000)  # 2024-01-01 UTC
+        self.assertEqual(candles[0][0], 1736121600000)  # 2025-01-06 UTC
 
 
 if __name__ == "__main__":

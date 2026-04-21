@@ -20,9 +20,9 @@ export type Interval = (typeof INTERVALS)[number];
 // filenames are predictable calendar dates anchored here. Keep these aligned
 // to a natural calendar boundary (Monday, 1st of month, 1st of year).
 export const INTERVAL_START_DATES: Record<Interval, string> = {
-  '15m': '2023-01-02', // first Monday of 2023
-  '30m': '2022-01-03', // first Monday of 2022
-  '1h':  '2018-01-01',
+  '15m': '2024-12-30', // Mon of ISO week containing Jan 1, 2025 (recent-only; shortest-granularity = biggest file count)
+  '30m': '2024-01-01', // Mon; recent-only for file-count control
+  '1h':  '2022-01-01', // 1st of month; moderate history
   '2h':  '2017-07-01', // bi-month containing Binance launch (2017-08-17)
   '4h':  '2017-07-01', // quarter containing launch
   '6h':  '2017-07-01', // half-year containing launch
@@ -31,7 +31,7 @@ export const INTERVAL_START_DATES: Record<Interval, string> = {
   '1d':  '2016-01-01', // 2-year window containing launch (even-year anchored)
   '3d':  '2015-01-01', // 5-year window
   '1w':  '2010-01-01', // 10-year window
-  '1M':  '2010-01-01',
+  '1M':  '2010-01-01', // 20-year window
 };
 
 export const END_DATE_EXCLUSIVE_ISO = '2040-01-01';

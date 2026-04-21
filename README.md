@@ -24,7 +24,7 @@ Every `(interval, symbol, window)` tuple is pre-rendered at build time into a pl
 - https://finom.github.io/static-klines/api/klines/start-dates/1d.json — every valid `startDate` for the 1d interval
 - https://finom.github.io/static-klines/api/klines/1d/BTCUSDT/2018-01-01.json — 2 years of BTCUSDT daily candles starting Jan 1, 2018
 - https://finom.github.io/static-klines/api/klines/1h/ETHUSDT/2024-01-01.json — January 2024 hourly candles for ETHUSDT
-- https://finom.github.io/static-klines/api/klines/15m/SOLUSDT/2024-01-01.json — first week of 2024, 15-minute SOLUSDT candles
+- https://finom.github.io/static-klines/api/klines/15m/SOLUSDT/2025-01-06.json — first full week of 2025, 15-minute SOLUSDT candles
 
 ## Symbols
 
@@ -36,9 +36,9 @@ Every `startDate` is a real, predictable calendar boundary — you can guess the
 
 | Interval | Window | Anchor (first window) | ≤ candles/file |
 |---------:|:-------|:----------------------|:---------------|
-| `15m`  | 1 ISO week (Mon)            | 2023-01-02 | 672 |
-| `30m`  | 2 ISO weeks (Mon)           | 2022-01-03 | 672 |
-| `1h`   | 1 month (1st)               | 2018-01-01 | 744 |
+| `15m`  | 1 ISO week (Mon)            | 2024-12-30 | 672 |
+| `30m`  | 2 ISO weeks (Mon)           | 2024-01-01 | 672 |
+| `1h`   | 1 month (1st)               | 2022-01-01 | 744 |
 | `2h`   | 2 months (1st)              | 2017-07-01 | 732 |
 | `4h`   | 1 quarter (Jan/Apr/Jul/Oct) | 2017-07-01 | 546 |
 | `6h`   | 6 months (Jan/Jul)          | 2017-07-01 | 732 |

@@ -47,12 +47,12 @@ describe('raw REST endpoints (live)', () => {
     assert.equal(typeof first[1], 'string', 'open is a stringified decimal');
   });
 
-  test('15m/SOLUSDT/2024-01-01.json returns a full 672-candle week', async () => {
-    const res = await fetch(`${apiRoot}/klines/15m/SOLUSDT/2024-01-01.json`);
+  test('15m/SOLUSDT/2025-01-06.json returns a full 672-candle week', async () => {
+    const res = await fetch(`${apiRoot}/klines/15m/SOLUSDT/2025-01-06.json`);
     assert.equal(res.status, 200);
     const candles = (await res.json()) as unknown[][];
     assert.equal(candles.length, 672, '7 days × 96 candles/day');
-    assert.equal(candles[0][0], Date.UTC(2024, 0, 1));
+    assert.equal(candles[0][0], Date.UTC(2025, 0, 6));
   });
 
   test('unknown window returns 404', async () => {
