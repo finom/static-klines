@@ -65,7 +65,7 @@ const sharedPackage = {
   author: 'Andrey Gubanov',
   repository: {
     type: 'git',
-    url: 'git+https://github.com/finom/static-klines.git',
+    url: 'https://github.com/finom/static-klines.git',
   },
   homepage: `${origin}${basePath}/`,
   bugs: {
