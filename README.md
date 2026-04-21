@@ -85,12 +85,12 @@ const candles = await KLinesAPI.getKlines1d({
 // → [[1514764800000, "13715.65000000", "13818.55000000", ...], ...]
 ```
 
-Override the `apiRoot` to point at a fork or preview deploy:
+The default `apiRoot` is baked into the client, so no extra wiring is needed. You can pass it explicitly if you want to be explicit:
 
 ```ts
 await KLinesAPI.getKlines15m({
   params: { symbol: 'SOLUSDT', startDate: '2025-01-06' },
-  apiRoot: 'https://my-fork.github.io/static-klines/api',
+  apiRoot: 'https://finom.github.io/static-klines/api',
 });
 ```
 
@@ -116,10 +116,10 @@ candles = KLinesAPI.get_klines_1d(
 )
 # [[1514764800000, '13715.65000000', '13818.55000000', ...], ...]
 
-# Override origin:
+# The default api_root is already set; pass it explicitly if you want to:
 candles = KLinesAPI.get_klines_15m(
     params={"symbol": "SOLUSDT", "startDate": "2025-01-06"},
-    api_root="https://my-fork.github.io/static-klines/api",
+    api_root="https://finom.github.io/static-klines/api",
 )
 ```
 
