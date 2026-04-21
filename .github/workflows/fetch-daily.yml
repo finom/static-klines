@@ -31,7 +31,13 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run fetch:klines
+      # Binance geo-blocks GitHub-hosted runners (HTTP 451 from US IPs).
+      # Treat fetch as best-effort: if it fails, build+deploy the existing cache.
+      # For real daily updates, switch to a self-hosted runner outside the US
+      # or refactor fetch-klines.ts to consume https://data.binance.vision/.
+      - name: Fetch latest candles (best-effort — Binance may geo-block)
+        run: npm run fetch:klines
+        continue-on-error: true
 
       - name: Commit updates
         run: |
