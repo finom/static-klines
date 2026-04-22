@@ -1,0 +1,34 @@
+name: Integration tests
+
+# Runs the TS + Python integration suites against the live GitHub Pages URL.
+# Fires automatically after a successful "Deploy Next.js site to Pages" run,
+# and can be dispatched manually from the Actions tab.
+on:
+  workflow_run:
+    workflows: ["Deploy Next.js site to Pages"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    # Only run after a successful deploy (skip on build/deploy failure).
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci
+      - name: Node integration tests (REST + TS client)
+        run: npm test
+      - name: Python integration tests (REST + Python client)
+        run: npm run test:py

@@ -94,23 +94,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-
-  # Integration tests — hit the freshly-deployed live URL through both
-  # the TypeScript and Python clients.
-  test:
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: npm ci
-      - name: Node integration tests (REST + TS client)
-        run: npm test
-      - name: Python integration tests (REST + Python client)
-        run: npm run test:py
