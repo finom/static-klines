@@ -67,6 +67,35 @@ class PythonClientLiveTests(unittest.TestCase):
         self.assertEqual(candles[0][0], 1736121600000)  # 2025-01-06 UTC
 
 
+class OpenApiShapeTests(unittest.TestCase):
+    """Regression checks for the published spec itself, independent of the
+    generated client. Catches path/server-prefix drifts like `/api/api/...`."""
+
+    def _fetch_spec(self) -> dict:
+        import urllib.request
+        with urllib.request.urlopen(f"{API_ROOT}/openapi.json") as r:
+            import json as _json
+            return _json.loads(r.read().decode())
+
+    def test_servers_do_not_end_in_api(self) -> None:
+        spec = self._fetch_spec()
+        # Paths already carry the /api prefix, so servers.url must not —
+        # otherwise tools composing ${server.url}${path} produce /api/api.
+        for server in spec["servers"]:
+            url = server["url"].rstrip("/")
+            self.assertFalse(
+                url.endswith("/api"),
+                f"servers.url '{url}' must not end with /api (paths already include it)",
+            )
+
+    def test_composed_url_resolves(self) -> None:
+        import urllib.request
+        spec = self._fetch_spec()
+        server = spec["servers"][0]["url"].rstrip("/")
+        with urllib.request.urlopen(f"{server}/api/klines/symbols.json") as r:
+            self.assertEqual(r.status, 200)
+
+
 class DefaultApiRootTests(unittest.TestCase):
     """Every client method should work without `api_root=` — the production
     URL is baked into the generated package. These tests always hit

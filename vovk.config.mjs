@@ -112,7 +112,9 @@ const config = {
         description,
         license: { name: 'MIT' },
       },
-      servers: [{ url: apiRoot, description: 'GitHub Pages (production)' }],
+      // Paths in the spec already include the `/api` prefix, so the server
+      // URL must NOT — otherwise tools that compose them produce `/api/api`.
+      servers: [{ url: `${origin}${basePath}`, description: 'GitHub Pages (production)' }],
     },
     package: sharedPackage,
     readme: sharedReadme,

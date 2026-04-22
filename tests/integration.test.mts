@@ -13,13 +13,37 @@ describe('raw REST endpoints (live)', () => {
   test('openapi.json exposes every klines endpoint', async () => {
     const res = await fetch(`${apiRoot}/openapi.json`);
     assert.equal(res.status, 200);
-    const spec = (await res.json()) as { paths: Record<string, unknown> };
+    const spec = (await res.json()) as {
+      paths: Record<string, unknown>;
+      servers?: { url: string }[];
+    };
     const paths = Object.keys(spec.paths);
     assert.ok(paths.includes('/api/openapi.json'), 'has openapi');
     assert.ok(paths.includes('/api/klines/symbols.json'), 'has symbols');
     assert.ok(paths.includes('/api/klines/start-dates/{interval}.json'), 'has start-dates');
     assert.ok(paths.includes('/api/klines/1d/{symbol}/{startDate}.json'), 'has 1d');
     assert.ok(paths.includes('/api/klines/15m/{symbol}/{startDate}.json'), 'has 15m');
+  });
+
+  test('openapi servers + paths compose without /api/api doubling', async () => {
+    const spec = (await (await fetch(`${apiRoot}/openapi.json`)).json()) as {
+      paths: Record<string, unknown>;
+      servers: { url: string }[];
+    };
+    // Paths already include the `/api` prefix, so servers.url must NOT.
+    // Otherwise any OpenAPI client composing `${servers.url}${path}` would
+    // produce https://.../static-klines/api/api/klines/... (404).
+    for (const { url } of spec.servers) {
+      assert.ok(
+        !url.endsWith('/api') && !url.endsWith('/api/'),
+        `servers.url ("${url}") must not end with /api — paths already include it`,
+      );
+    }
+    // Spot-check: composing server URL + a known path resolves to a real file.
+    const [server] = spec.servers;
+    const composed = `${server.url.replace(/\/$/, '')}/api/klines/symbols.json`;
+    const probe = await fetch(composed);
+    assert.equal(probe.status, 200, `${composed} should serve the symbols list`);
   });
 
   test('symbols.json returns the expected 10 pairs', async () => {
