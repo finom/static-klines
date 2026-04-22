@@ -65,6 +65,8 @@ ${intervalsTable}
 
 Each file contains the fully-closed Binance spot candles that fall inside that calendar window (always ≤1000). Pre-listing windows return \`[]\`; future windows are scaffolded as \`[]\` and populated daily by GitHub Actions.
 
+📋 **Every URL enumerated:** see [ENDPOINTS.md](https://github.com/finom/static-klines/blob/main/ENDPOINTS.md) on GitHub — a flat, human-browsable list of all 17,784 static endpoints (meta + candles) served by this site through 2040-01-01.
+
 > **⚠️ Experimental / not audit-grade.** This is a community cache of Binance's public REST API, refreshed once a day. Binance occasionally restates historical candles and a daily cache can't reflect that. Don't use it for trading or compliance — fine for ML datasets, charts, backtests, and exploratory analysis.
 `.trim();
 
