@@ -8,28 +8,36 @@ const basePath = '/static-klines';
 const apiRoot = `${origin}${basePath}/api`;
 
 const PAIRS = [
-  'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT',
-  'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'LINKUSDT', 'DOTUSDT',
+  'BTCUSDT',
+  'ETHUSDT',
+  'BNBUSDT',
+  'SOLUSDT',
+  'XRPUSDT',
+  'ADAUSDT',
+  'DOGEUSDT',
+  'AVAXUSDT',
+  'LINKUSDT',
+  'DOTUSDT',
 ];
 
 const INTERVAL_WINDOWS = [
-  ['15m', '1 ISO week (Mon)',            '2024-12-30', '672'],
-  ['30m', '2 ISO weeks (Mon)',           '2024-01-01', '672'],
-  ['1h',  '1 month (1st)',               '2022-01-01', '744'],
-  ['2h',  '2 months (1st)',              '2017-07-01', '732'],
-  ['4h',  '1 quarter (Jan/Apr/Jul/Oct)', '2017-07-01', '546'],
-  ['6h',  '6 months (Jan/Jul)',          '2017-07-01', '732'],
-  ['8h',  '6 months (Jan/Jul)',          '2017-07-01', '546'],
-  ['12h', '1 year (Jan 1)',              '2017-01-01', '732'],
-  ['1d',  '2 years (Jan 1, even)',       '2016-01-01', '732'],
-  ['3d',  '5 years (Jan 1)',             '2015-01-01', '609'],
-  ['1w',  '10 years (Jan 1)',            '2010-01-01', '522'],
-  ['1M',  '20 years (Jan 1)',            '2010-01-01', '240'],
+  ['15m', '1 ISO week (Mon)', '2024-12-30', '672'],
+  ['30m', '2 ISO weeks (Mon)', '2024-01-01', '672'],
+  ['1h', '1 month (1st)', '2022-01-01', '744'],
+  ['2h', '2 months (1st)', '2017-07-01', '732'],
+  ['4h', '1 quarter (Jan/Apr/Jul/Oct)', '2017-07-01', '546'],
+  ['6h', '6 months (Jan/Jul)', '2017-07-01', '732'],
+  ['8h', '6 months (Jan/Jul)', '2017-07-01', '546'],
+  ['12h', '1 year (Jan 1)', '2017-01-01', '732'],
+  ['1d', '2 years (Jan 1, even)', '2016-01-01', '732'],
+  ['3d', '5 years (Jan 1)', '2015-01-01', '609'],
+  ['1w', '10 years (Jan 1)', '2010-01-01', '522'],
+  ['1M', '20 years (Jan 1)', '2010-01-01', '240'],
 ];
 
-const intervalsTable = INTERVAL_WINDOWS
-  .map(([i, window, anchor, max]) => `| \`${i}\` | ${window} | ${anchor} | ≤ ${max} |`)
-  .join('\n');
+const intervalsTable = INTERVAL_WINDOWS.map(
+  ([i, window, anchor, max]) => `| \`${i}\` | ${window} | ${anchor} | ≤ ${max} |`,
+).join('\n');
 
 const symbolsList = PAIRS.map((p) => `\`${p}\``).join(', ');
 
@@ -113,10 +121,18 @@ const config = {
         version: rootPkg.version,
         description,
         license: { name: 'MIT' },
+        contact: {
+          name: 'Source on GitHub',
+          url: 'https://github.com/finom/static-klines',
+        },
       },
       // Paths in the spec already include the `/api` prefix, so the server
       // URL must NOT — otherwise tools that compose them produce `/api/api`.
       servers: [{ url: `${origin}${basePath}`, description: 'GitHub Pages (production)' }],
+      externalDocs: {
+        description: 'Source code, issues, and endpoint enumeration on GitHub',
+        url: 'https://github.com/finom/static-klines',
+      },
     },
     package: sharedPackage,
     readme: sharedReadme,
