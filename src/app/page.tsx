@@ -46,9 +46,10 @@ export default function Home() {
           url: `${basePath}/api/openapi.json`,
           hideClientButton: false,
           metaData: {
-            title: 'static-klines — Binance spot klines as static JSON',
+            title:
+              'static-klines — Binance spot klines as static JSON + TypeScript & Python clients',
             description:
-              'Historical Binance spot klines served as pre-rendered static JSON. No rate limits, infinite cache lifetime.',
+              'Historical Binance spot klines served as pre-rendered static JSON, with type-safe TypeScript (npm) and Python (PyPI) client libraries auto-generated from the same schema. No rate limits, infinite cache lifetime.',
           },
         }}
       />
