@@ -43,6 +43,19 @@ const symbolsList = PAIRS.map((p) => `\`${p}\``).join(', ');
 
 const description = `Type-safe, auto-generated client for the **static-klines** API — historical Binance spot klines served as pre-rendered static JSON. No rate limits, infinite cache lifetime, globally CDN'd.`;
 
+// Richer variant used only for OpenAPI `info.description` (rendered by
+// Scalar on the docs page). Package.json description fields and the
+// bundled README keep the plain one-liner above.
+const openApiInfoDescription = `${description}
+
+### Install
+
+\`\`\`bash
+npm install static-klines      # TypeScript client
+pip install static-klines      # Python client
+\`\`\`
+`;
+
 const banner = `
 **static-klines** — pre-rendered historical Binance spot klines for the top 10 USDT pairs, served as plain static JSON files on GitHub Pages. Built as a zero-setup dataset for AI model training, backtesting, and other crypto data experiments where you just want candles in a fetch call without signing up, paying, or managing rate limits.
 
@@ -119,7 +132,7 @@ const config = {
       info: {
         title: 'static-klines',
         version: rootPkg.version,
-        description,
+        description: openApiInfoDescription,
         license: { name: 'MIT' },
         contact: {
           name: 'Source on GitHub',
