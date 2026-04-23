@@ -16,6 +16,7 @@
     "generate:endpoints-md": "node scripts/generate-endpoints-md.ts",
     "fetch:klines": "node scripts/fetch-klines.ts",
     "fetch:klines:dry": "DRY_RUN=1 node scripts/fetch-klines.ts",
+    "update-badge": "node scripts/update-badge.ts",
     "scaffold:cache": "SKIP_FETCH=1 node scripts/fetch-klines.ts",
     "bundle": "vovk bundle",
     "bundle:py": "vovk generate --from py --out ./dist_python --origin https://finom.github.io/static-klines",
