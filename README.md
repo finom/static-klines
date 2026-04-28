@@ -3,7 +3,7 @@
 [![Deploy](https://github.com/finom/static-klines/actions/workflows/nextjs.yml/badge.svg)](https://github.com/finom/static-klines/actions/workflows/nextjs.yml)
 [![Integration tests](https://github.com/finom/static-klines/actions/workflows/tests.yml/badge.svg)](https://github.com/finom/static-klines/actions/workflows/tests.yml)
 [![Fetch klines daily](https://github.com/finom/static-klines/actions/workflows/fetch-daily.yml/badge.svg)](https://github.com/finom/static-klines/actions/workflows/fetch-daily.yml)
-[![Data through 2026-04-26](https://img.shields.io/badge/data%20through-2026--04--26-brightgreen)](https://github.com/finom/static-klines/actions/workflows/fetch-daily.yml)
+[![Data through 2026-04-27](https://img.shields.io/badge/data%20through-2026--04--27-brightgreen)](https://github.com/finom/static-klines/actions/workflows/fetch-daily.yml)
 [![npm version](https://img.shields.io/npm/v/static-klines.svg?label=npm%20%7C%20static-klines)](https://www.npmjs.com/package/static-klines)
 [![PyPI version](https://img.shields.io/pypi/v/static-klines.svg?label=PyPI%20%7C%20static-klines)](https://pypi.org/project/static-klines/)
 [![Vovk.ts](https://badgen.net/badge/Built%20with/Vovk.ts/333333?icon=https://vovk.dev/icon-white.svg)](https://vovk.dev)
