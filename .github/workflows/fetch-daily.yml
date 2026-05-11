@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: write
+  # Needed so the final step can dispatch the Pages deploy workflow.
+  # See "Trigger Pages redeploy" below for why this is required.
+  actions: write
 
 concurrency:
   group: fetch-klines
@@ -31,15 +34,29 @@ jobs:
       - run: npm run update-badge
 
       - name: Commit + push cache updates
+        id: push
         run: |
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .klines-cache README.md
           if git diff --cached --quiet; then
             echo "No changes to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "chore(data): daily klines update $(date -u +%Y-%m-%d)"
             git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
           fi
-          # The push (if any) triggers the "Deploy Next.js site to Pages"
-          # workflow, which rebuilds and redeploys the site.
+
+      - name: Trigger Pages redeploy
+        # Pushes authored by the default GITHUB_TOKEN do NOT recursively
+        # trigger other workflows — GitHub's recursion safety. The previous
+        # version of this workflow assumed they did, so every daily commit
+        # since 2026-04-23 sat stranded on main without ever being deployed
+        # to the CDN (badge said "data through 2026-04-22" while .klines-cache
+        # actually had data through yesterday). Explicit workflow_dispatch
+        # bypasses the recursion check and is the documented way to chain.
+        if: steps.push.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run nextjs.yml --ref main
