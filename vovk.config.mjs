@@ -1,8 +1,5 @@
 // @ts-check
 import { readFileSync } from 'node:fs';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
 
 const rootPkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
